@@ -14,11 +14,12 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div id="updBar" hidden>มีเวอร์ชันใหม่ <b id="updV"></b> <button id="updGo">อัปเดตเลย</button><button id="updX" aria-label="ปิด">✕</button></div>
 <header class="top">
   <div class="brand">
     <div>
       <h1>SafeTalk <span>Q3/2026</span></h1>
-      <p class="sub">ทบทวนคำถาม Safety · First Aid · Security</p>
+      <p class="sub">ทบทวน Safety · First Aid · Security <button id="verBtn" class="ver" aria-label="เวอร์ชันและอัปเดต">v<span id="verTxt"></span> ⟳</button></p>
     </div>
     <div class="ring" id="ring" title="ความคืบหน้า">
       <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" class="bg"/><circle cx="18" cy="18" r="15.5" class="fg" id="ringFg"/></svg>
@@ -60,6 +61,19 @@
   <section id="pages" hidden></section>
 </main>
 
+<div id="sheet" hidden>
+  <div class="sheet-card">
+    <h3>SafeTalk Reader</h3>
+    <div class="sheet-row"><span>เวอร์ชันที่ใช้อยู่</span><b id="shCur"></b></div>
+    <div class="sheet-row"><span>เวอร์ชันล่าสุดบนเซิร์ฟเวอร์</span><b id="shNew">กำลังตรวจสอบ…</b></div>
+    <div class="sheet-notes"><b>มีอะไรใหม่</b><ul id="shNotes"></ul></div>
+    <button class="btn ok sheet-go" id="shGo">⟳ รีเฟรชโหลดเวอร์ชันล่าสุด</button>
+    <p class="sheet-hint">ล้างแคชในเครื่องแล้วโหลดใหม่ทั้งหมด ความคืบหน้าและสถิติเกมยังอยู่ครบ</p>
+    <button class="btn ghost sheet-close" id="shClose">ปิด</button>
+  </div>
+</div>
+<div id="toast" hidden></div>
+
 <div id="viewer" hidden>
   <div class="vbar">
     <button id="vOut" aria-label="ซูมออก">−</button>
@@ -72,8 +86,11 @@
   <button class="vnav next" id="vNext" aria-label="ถัดไป">›</button>
 </div>
 
+<script src="version.js"></script>
 <script src="data.js"></script>
+<script src="gamedata.js"></script>
 <script src="game.js"></script>
 <script src="app.js"></script>
+<script src="update.js"></script>
 </body>
 </html>
