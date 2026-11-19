@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -14,33 +14,37 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="updBar" hidden>มีเวอร์ชันใหม่ <b id="updV"></b> <button id="updGo">อัปเดตเลย</button><button id="updX" aria-label="ปิด">✕</button></div>
+<div id="updBar" hidden><span data-i18n="upd_new">New version</span> <b id="updV"></b> <button id="updGo" data-i18n="upd_go">Update now</button><button id="updX" aria-label="Close">✕</button></div>
 <header class="top">
   <div class="brand">
     <div>
       <h1>SafeTalk <span class="q">Q3/2026</span><span class="plane">✈️</span></h1>
-      <p class="sub">ทบทวน Safety · First Aid · Security <button id="verBtn" class="ver" aria-label="เวอร์ชันและอัปเดต">v<span id="verTxt"></span> ⟳</button></p>
+      <p class="sub" data-i18n="sub">Safety · First Aid · Security review</p>
+      <div class="ctrls">
+        <div class="lang" role="group" aria-label="Language"><button data-lang="en" class="on">EN</button><button data-lang="th">TH</button></div>
+        <button id="verBtn" class="ver" aria-label="Version and update">v<span id="verTxt"></span> ⟳</button>
+      </div>
     </div>
-    <div class="ring" id="ring" title="ความคืบหน้า">
+    <div class="ring" id="ring" title="Progress">
       <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" class="bg"/><circle cx="18" cy="18" r="15.5" class="fg" id="ringFg"/></svg>
       <b id="ringTxt">0/0</b>
     </div>
   </div>
   <nav class="modes" role="tablist">
-    <button data-mode="read" class="on">อ่าน</button>
-    <button data-mode="cards">แฟลชการ์ด</button>
-    <button data-mode="game">เกม</button>
-    <button data-mode="pages">หน้าต้นฉบับ</button>
+    <button data-mode="read" class="on" data-i18n="m_read">Read</button>
+    <button data-mode="cards" data-i18n="m_cards">Flashcards</button>
+    <button data-mode="game" data-i18n="m_game">Games</button>
+    <button data-mode="pages" data-i18n="m_pages">Original</button>
   </nav>
 </header>
 
 <main>
   <section id="filters">
-    <div class="search"><input id="q" type="search" placeholder="ค้นหาไทยหรืออังกฤษ เช่น ประตู, ELT, ทารก…" autocomplete="off"></div>
+    <div class="search"><input id="q" type="search" placeholder="Search…" data-i18n-ph="search" autocomplete="off"></div>
     <div class="chips" id="secChips"></div>
     <div class="chips fleet" id="fleetChips">
-      <span class="lbl">✈️ เครื่อง</span>
-      <button data-fleet="all" class="on">ทั้งหมด</button>
+      <span class="lbl" data-i18n="fleet">✈️ Aircraft</span>
+      <button data-fleet="all" class="on" data-i18n="fleet_all">All</button>
       <button data-fleet="A">🩷 Airbus</button>
       <button data-fleet="B">💙 Boeing</button>
     </div>
@@ -50,8 +54,8 @@
 
   <section id="cards" hidden>
     <div class="cardbar">
-      <label><input type="checkbox" id="onlyTodo"> เฉพาะข้อที่ยังไม่จำ</label>
-      <button id="shuffle" class="ghost">สุ่มลำดับ</button>
+      <label><input type="checkbox" id="onlyTodo"> <span data-i18n="only_todo">Only not memorized</span></label>
+      <button id="shuffle" class="ghost" data-i18n="shuffle">Shuffle</button>
     </div>
     <div id="card"></div>
   </section>
@@ -64,31 +68,33 @@
 <div id="sheet" hidden>
   <div class="sheet-card">
     <h3>SafeTalk Reader</h3>
-    <div class="sheet-row"><span>เวอร์ชันที่ใช้อยู่</span><b id="shCur"></b></div>
-    <div class="sheet-row"><span>เวอร์ชันล่าสุดบนเซิร์ฟเวอร์</span><b id="shNew">กำลังตรวจสอบ…</b></div>
-    <div class="sheet-notes"><b>มีอะไรใหม่</b><ul id="shNotes"></ul></div>
-    <button class="btn ok sheet-go" id="shGo">⟳ รีเฟรชโหลดเวอร์ชันล่าสุด</button>
-    <p class="sheet-hint">ล้างแคชในเครื่องแล้วโหลดใหม่ทั้งหมด ความคืบหน้าและสถิติเกมยังอยู่ครบ</p>
-    <button class="btn ghost sheet-close" id="shClose">ปิด</button>
+    <div class="sheet-row"><span data-i18n="sh_cur"></span><b id="shCur"></b></div>
+    <div class="sheet-row"><span data-i18n="sh_new"></span><b id="shNew"></b></div>
+    <div class="sheet-notes"><b data-i18n="sh_whats"></b><ul id="shNotes"></ul></div>
+    <button class="btn ok sheet-go" id="shGo" data-i18n="sh_go"></button>
+    <p class="sheet-hint" data-i18n="sh_hint"></p>
+    <button class="btn ghost sheet-close" id="shClose" data-i18n="sh_close"></button>
   </div>
 </div>
 <div id="toast" hidden></div>
 
 <div id="viewer" hidden>
   <div class="vbar">
-    <button id="vOut" aria-label="ซูมออก">−</button>
-    <button id="vIn" aria-label="ซูมเข้า">+</button>
+    <button id="vOut" aria-label="Zoom out">−</button>
+    <button id="vIn" aria-label="Zoom in">+</button>
     <span id="vCount"></span>
-    <button id="vClose" aria-label="ปิด">✕</button>
+    <button id="vClose" aria-label="Close">✕</button>
   </div>
   <div class="vscroll" id="vScroll"><img id="vImg" alt=""></div>
-  <button class="vnav prev" id="vPrev" aria-label="ก่อนหน้า">‹</button>
-  <button class="vnav next" id="vNext" aria-label="ถัดไป">›</button>
+  <button class="vnav prev" id="vPrev" aria-label="Previous">‹</button>
+  <button class="vnav next" id="vNext" aria-label="Next">›</button>
 </div>
 
+<script src="i18n.js"></script>
 <script src="version.js"></script>
 <script src="data.js"></script>
 <script src="th.js"></script>
+<script src="en.js"></script>
 <script src="gamedata.js"></script>
 <script src="game.js"></script>
 <script src="app.js"></script>

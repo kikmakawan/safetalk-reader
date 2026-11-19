@@ -1,11 +1,17 @@
 // Bump all three together when releasing: version.js, version.json, CACHE in sw.js
 window.APP_VERSION = {
-  v: "1.4.0",
-  date: "20 พ.ย. 2026",
-  notes: [
-    "โฉมใหม่ สีพาสเทล น่ารัก อ่านง่ายขึ้น พร้อมฟอนต์ไทยในตัว",
-    "ทุกข้อมีคำถามภาษาไทย + แปลคำตอบเป็นไทย",
-    "เพิ่ม 💡 อธิบายเข้าใจง่าย และ 🧠 ทริกจำไวๆ ครบ 43 ข้อ",
-    "ค้นหาเป็นภาษาไทยได้"
-  ]
+  v: "1.5.0",
+  date: "20 Nov 2026",
+  notes: {
+    en: [
+      "EN / TH language switch — English is now the default",
+      "English “Simply put” explanations and memory tricks for all 43 questions",
+      "Manual image shown first in English mode; Thai translation one tap away",
+    ],
+    th: [
+      "ปุ่มสลับภาษา EN / TH (ค่าเริ่มต้นเป็นอังกฤษ)",
+      "เพิ่มคำอธิบายง่ายๆ และทริกจำเป็นภาษาอังกฤษครบ 43 ข้อ",
+      "โหมดอังกฤษเปิดภาพคู่มือก่อน แปลไทยแตะดูได้ทันที",
+    ],
+  },
 };

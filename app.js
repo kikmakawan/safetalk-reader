@@ -16,7 +16,7 @@
     idx: 0,
     revealed: false,
     onlyTodo: !!store.onlyTodo,
-    atab: store.atab || "th",
+    atab: typeof store.atab === "object" && store.atab ? store.atab : { en: "img", th: "th" },
   };
   const save = () => {
     try {
@@ -38,7 +38,9 @@
   }
 
   const TH = window.TH || {};
-  const hay = it => { const t = TH[it.id] || {}; return [it.q, it.note, secOf(it.sec).name, secOf(it.sec).th, t.q, (t.a || []).join(" "), t.ez, t.tk].join(" ").toLowerCase(); };
+  const EN = window.EN || {};
+  const isTH = () => LANG() === "th";
+  const hay = it => { const h = TH[it.id] || {}, e = EN[it.id] || {}; return [it.q, it.note, secOf(it.sec).name, secOf(it.sec).th, h.q, (h.a || []).join(" "), h.ez, h.tk, e.ez, e.tk].join(" ").toLowerCase(); };
   const SEC_ICON = { safety: "🛟", firstaid: "🩹", security: "🛡️" };
 
   // ---------- progress ring ----------
@@ -54,7 +56,7 @@
     const counts = id => D.items.filter(it => (id === "all" || it.sec === id) && (S.fleet === "all" || !it.fleet || it.fleet === S.fleet)).length;
     const list = [{ id: "all", th: "ทั้งหมด" }, ...D.sections];
     $("#secChips").innerHTML = list.map(s =>
-      `<button data-sec="${s.id}" class="${S.sec === s.id ? "on" : ""}">${s.id === "all" ? "✨ ทั้งหมด" : SEC_ICON[s.id] + " " + s.name}<small>${counts(s.id)}</small></button>`
+      `<button data-sec="${s.id}" class="${S.sec === s.id ? "on" : ""}">${s.id === "all" ? t("all") : SEC_ICON[s.id] + " " + s.name}<small>${counts(s.id)}</small></button>`
     ).join("");
     document.querySelectorAll("#fleetChips button").forEach(b => b.classList.toggle("on", b.dataset.fleet === S.fleet));
   }
@@ -68,35 +70,33 @@
     return h + (open ? "</ul>" : "");
   }
   function answerHTML(it) {
-    const t = TH[it.id], tab = t ? S.atab : "img";
-    const imgs = it.img.map((src, i) => `<img loading="lazy" src="img/${src}" data-id="${it.id}" data-i="${i}" alt="คำตอบข้อ ${it.no}">`).join("") +
-      (it.note ? `<div class="note">${esc(it.note)}</div>` : "") + `<div class="src">📖 Cabin Crew Manual หน้า ${it.ref}</div>`;
-    if (!t) return imgs;
-    return `<div class="atabs">
-        <button data-atab="th" class="${tab === "th" ? "on" : ""}">🇹🇭 แปลไทย</button>
-        <button data-atab="img" class="${tab === "img" ? "on" : ""}">📖 คู่มือ (EN)</button>
-      </div>
-      <div class="apane" data-pane="th" ${tab === "th" ? "" : "hidden"}>${thList(t.a)}</div>
-      <div class="apane" data-pane="img" ${tab === "img" ? "" : "hidden"}>${imgs}</div>
-      ${t.ez ? `<div class="sticky ez"><b>💡 เข้าใจง่ายๆ</b>${esc(t.ez)}</div>` : ""}
-      ${t.tk ? `<div class="sticky tk"><b>🧠 ทริกจำไวๆ</b>${esc(t.tk)}</div>` : ""}`;
+    const th = TH[it.id], notes = isTH() ? th : EN[it.id], tab = th ? S.atab[LANG()] : "img";
+    const imgs = it.img.map((src, i) => `<img loading="lazy" src="img/${src}" data-id="${it.id}" data-i="${i}" alt="Answer ${it.no}">`).join("") +
+      (it.note ? `<div class="note">${esc(it.note)}</div>` : "") + `<div class="src">${t("ccm", { p: it.ref })}</div>`;
+    const tabs = [["img", t("tab_manual")], ["th", t("tab_th")]];
+    if (isTH()) tabs.reverse();
+    return (th ? `<div class="atabs">${tabs.map(([k, l]) => `<button data-atab="${k}" class="${tab === k ? "on" : ""}">${l}</button>`).join("")}</div>
+      <div class="apane" data-pane="th" ${tab === "th" ? "" : "hidden"}>${thList(th.a)}</div>` : "") +
+      `<div class="apane" data-pane="img" ${tab === "img" ? "" : "hidden"}>${imgs}</div>
+      ${notes && notes.ez ? `<div class="sticky ez"><b>${t("ez")}</b>${esc(notes.ez)}</div>` : ""}
+      ${notes && notes.tk ? `<div class="sticky tk"><b>${t("tk")}</b>${esc(notes.tk)}</div>` : ""}`;
   }
 
   const headHTML = it => {
-    const t = TH[it.id], b = it.fleet ? `<span class="badge ${it.fleet}">${fleetName(it.fleet)}</span>` : "";
-    return t ? `<span class="q-th">${b}${esc(t.q)}</span><span class="q-en">${esc(it.q)}</span>` : `<span class="q-th">${b}${esc(it.q)}</span>`;
+    const th = TH[it.id], b = it.fleet ? `<span class="badge ${it.fleet}">${fleetName(it.fleet)}</span>` : "";
+    return isTH() && th ? `<span class="q-th">${b}${esc(th.q)}</span><span class="q-en">${esc(it.q)}</span>` : `<span class="q-th">${b}${esc(it.q)}</span>`;
   };
 
   // ---------- read mode ----------
   function renderRead() {
     const items = visible();
-    if (!items.length) { $("#read").innerHTML = `<p class="empty">ไม่พบคำถามที่ตรงกับการค้นหา</p>`; return; }
+    if (!items.length) { $("#read").innerHTML = `<p class="empty">${t("no_match")}</p>`; return; }
     let html = "", cur = null;
     for (const it of items) {
       if (it.sec !== cur) {
         cur = it.sec;
         const s = secOf(cur);
-        html += `<div class="sechead" data-sec="${cur}"><span class="s-ico">${SEC_ICON[cur]}</span><div><h2>${s.th}</h2><span>${s.name}</span></div></div>`;
+        html += `<div class="sechead" data-sec="${cur}"><span class="s-ico">${SEC_ICON[cur]}</span><div>${isTH() ? `<h2>${s.th}</h2><span>${s.name}</span>` : `<h2>${s.name}</h2>`}</div></div>`;
       }
       const open = S.open.has(it.id);
       html += `<article class="item ${S.known.has(it.id) ? "known" : ""} ${open ? "open" : ""}" data-sec="${it.sec}" data-id="${it.id}">
@@ -105,8 +105,8 @@
         </button>
         ${open ? `<div class="ans">${answerHTML(it)}
           <div class="actions">
-            <button class="btn ${S.known.has(it.id) ? "" : "ok"}" data-known="${it.id}">${S.known.has(it.id) ? "ยกเลิก “จำได้แล้ว”" : "✓ จำได้แล้ว"}</button>
-            <span class="meta">SafeTalk หน้า ${it.page}</span>
+            <button class="btn ${S.known.has(it.id) ? "" : "ok"}" data-known="${it.id}">${S.known.has(it.id) ? t("ungot") : t("got")}</button>
+            <span class="meta">${t("page", { p: it.page })}</span>
           </div></div>` : ""}
       </article>`;
     }
@@ -127,34 +127,35 @@
     $("#onlyTodo").checked = S.onlyTodo;
     const items = deck();
     if (!items.length) {
-      $("#card").innerHTML = `<p class="empty">${S.onlyTodo ? "เก่งมาก! จำได้ครบทุกข้อในหมวดนี้แล้ว 🎉" : "ไม่พบคำถาม"}</p>`;
+      $("#card").innerHTML = `<p class="empty">${S.onlyTodo ? t("all_done") : t("none")}</p>`;
       return;
     }
     if (S.idx >= items.length) S.idx = 0;
     if (S.idx < 0) S.idx = items.length - 1;
     const it = items[S.idx], s = secOf(it.sec);
     $("#card").innerHTML = `<div class="flash" data-sec="${it.sec}">
-      <div class="tag">${SEC_ICON[it.sec]} ${s.th} · ข้อ ${it.no}${S.known.has(it.id) ? " · ✓ จำได้แล้ว" : ""}</div>
+      <div class="tag">${SEC_ICON[it.sec]} ${isTH() ? s.th : s.name} · ${t("q", { n: it.no })}${S.known.has(it.id) ? t("known_tag") : ""}</div>
       <h3>${headHTML(it)}</h3>
       ${S.revealed ? `<div class="ans">${answerHTML(it)}</div>
         <div class="cardnav">
-          <button class="btn" data-grade="0">ยังไม่แม่น</button>
-          <button class="btn ok" data-grade="1">จำได้แล้ว</button>
-        </div>` : `<button class="reveal" id="reveal">👀 แตะเพื่อดูคำตอบ</button>`}
+          <button class="btn" data-grade="0">${t("notyet")}</button>
+          <button class="btn ok" data-grade="1">${t("gotit")}</button>
+        </div>` : `<button class="reveal" id="reveal">${t("reveal")}</button>`}
       </div>
       <div class="cardnav">
-        <button class="btn ghost" data-step="-1">‹ ก่อนหน้า</button>
-        <button class="btn ghost" data-step="1">ถัดไป ›</button>
+        <button class="btn ghost" data-step="-1">${t("prev")}</button>
+        <button class="btn ghost" data-step="1">${t("next")}</button>
       </div>
       <div class="counter">${S.idx + 1} / ${items.length}</div>`;
   }
 
   // ---------- pages ----------
   function renderPages() {
-    if ($("#pages").childElementCount) return;
+    if ($("#pages").dataset.lang === LANG()) return;
+    $("#pages").dataset.lang = LANG();
     let h = "";
     for (let p = 1; p <= D.pages; p++)
-      h += `<div class="ptitle">หน้า ${p}</div><img loading="lazy" src="pages/page-${p}.jpg" data-page="${p}" alt="SafeTalk หน้า ${p}">`;
+      h += `<div class="ptitle">${t("page_n", { p })}</div><img loading="lazy" src="pages/page-${p}.jpg" data-page="${p}" alt="SafeTalk page ${p}">`;
     $("#pages").innerHTML = h;
   }
 
@@ -219,8 +220,9 @@
     if (d.mode) { S.mode = d.mode; save(); render(); scrollTo(0, 0); return; }
     if (d.sec) { S.sec = d.sec; S.idx = 0; S.revealed = false; save(); render(); return; }
     if (d.fleet) { S.fleet = d.fleet; S.idx = 0; S.revealed = false; save(); render(); return; }
+    if (d.lang) { setLang(d.lang); return; }
     if (d.atab) {
-      S.atab = d.atab; save();
+      S.atab[LANG()] = d.atab; save();
       const box = t.closest(".ans") || t.closest(".flash");
       box.querySelectorAll("[data-atab]").forEach(b => b.classList.toggle("on", b.dataset.atab === d.atab));
       box.querySelectorAll("[data-pane]").forEach(p => (p.hidden = p.dataset.pane !== d.atab));
@@ -257,6 +259,8 @@
   $("#onlyTodo").onchange = e => { S.onlyTodo = e.target.checked; S.idx = 0; S.revealed = false; save(); renderCards(); };
   $("#q").addEventListener("input", e => { S.q = e.target.value; S.idx = 0; S.revealed = false; S.mode === "cards" ? renderCards() : renderRead(); });
 
+  applyI18n();
+  document.addEventListener("langchange", () => { render(); window.STGame.relang && window.STGame.relang(); });
   render();
 
   if ("serviceWorker" in navigator && location.protocol !== "file:") {
