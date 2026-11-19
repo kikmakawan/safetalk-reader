@@ -43,10 +43,10 @@
             <div class="g-imgs">${it.img.map((s, i) => `<img src="img/${s}" data-g-zoom="${i}" alt="">`).join("")}</div>
             ${it.note ? `<div class="note">${esc(it.note)}</div>` : ""}
           </div>
-          <div class="g-opts">${G.opts.map((o, i) => `<button class="g-opt" data-g-pick="${i}"><span class="g-key">${"ABCD"[i]}</span><span>${fleetTag(o.fleet)}${esc(o.q)}</span></button>`).join("")}</div>`;
+          <div class="g-opts">${G.opts.map((o, i) => `<button class="g-opt" data-g-pick="${i}"><span class="g-key">${"ABCD"[i]}</span><span>${fleetTag(o.fleet)}${esc(o.q)}${window.TH && TH[o.id] ? `<span class="g-th">${esc(TH[o.id].q)}</span>` : ""}</span></button>`).join("")}</div>`;
       },
       pick(i, it) { return { ok: G.opts[i] === it, right: G.opts.indexOf(it), info: `คำตอบคือข้อ ${it.no} · CCM ${it.ref}` }; },
-      missLabel: it => `${fleetTag(it.fleet)}${esc(it.q)}`,
+      missLabel: it => `${fleetTag(it.fleet)}${esc(it.q)}${window.TH && TH[it.id] ? `<br><small>🧠 ${esc(TH[it.id].tk)}</small>` : ""}`,
     },
 
     tf: {

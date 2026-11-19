@@ -16,10 +16,11 @@
     idx: 0,
     revealed: false,
     onlyTodo: !!store.onlyTodo,
+    atab: store.atab || "th",
   };
   const save = () => {
     try {
-      localStorage.setItem(KEY, JSON.stringify({ mode: S.mode, sec: S.sec, fleet: S.fleet, known: [...S.known], onlyTodo: S.onlyTodo }));
+      localStorage.setItem(KEY, JSON.stringify({ mode: S.mode, sec: S.sec, fleet: S.fleet, known: [...S.known], onlyTodo: S.onlyTodo, atab: S.atab }));
     } catch {}
   };
   const secOf = id => D.sections.find(s => s.id === id);
@@ -32,9 +33,13 @@
     return D.items.filter(it =>
       (S.sec === "all" || it.sec === S.sec) &&
       (S.fleet === "all" || !it.fleet || it.fleet === S.fleet) &&
-      (!q || (it.q + " " + (it.note || "") + " " + secOf(it.sec).name).toLowerCase().includes(q))
+      (!q || hay(it).includes(q))
     );
   }
+
+  const TH = window.TH || {};
+  const hay = it => { const t = TH[it.id] || {}; return [it.q, it.note, secOf(it.sec).name, secOf(it.sec).th, t.q, (t.a || []).join(" "), t.ez, t.tk].join(" ").toLowerCase(); };
+  const SEC_ICON = { safety: "🛟", firstaid: "🩹", security: "🛡️" };
 
   // ---------- progress ring ----------
   function ring() {
@@ -49,17 +54,38 @@
     const counts = id => D.items.filter(it => (id === "all" || it.sec === id) && (S.fleet === "all" || !it.fleet || it.fleet === S.fleet)).length;
     const list = [{ id: "all", th: "ทั้งหมด" }, ...D.sections];
     $("#secChips").innerHTML = list.map(s =>
-      `<button data-sec="${s.id}" class="${S.sec === s.id ? "on" : ""}">${s.id === "all" ? s.th : s.name}<small>${counts(s.id)}</small></button>`
+      `<button data-sec="${s.id}" class="${S.sec === s.id ? "on" : ""}">${s.id === "all" ? "✨ ทั้งหมด" : SEC_ICON[s.id] + " " + s.name}<small>${counts(s.id)}</small></button>`
     ).join("");
     document.querySelectorAll("#fleetChips button").forEach(b => b.classList.toggle("on", b.dataset.fleet === S.fleet));
   }
 
-  const answerHTML = it =>
-    it.img.map((src, i) => `<img loading="lazy" src="img/${src}" data-id="${it.id}" data-i="${i}" alt="คำตอบข้อ ${it.no}">`).join("") +
-    (it.note ? `<div class="note">${esc(it.note)}</div>` : "");
+  function thList(lines) {
+    let h = "", open = false;
+    for (const l of lines) {
+      if (l.startsWith("# ")) { if (open) { h += "</ul>"; open = false; } h += `<h4>${esc(l.slice(2))}</h4>`; }
+      else { if (!open) { h += "<ul>"; open = true; } h += `<li>${esc(l)}</li>`; }
+    }
+    return h + (open ? "</ul>" : "");
+  }
+  function answerHTML(it) {
+    const t = TH[it.id], tab = t ? S.atab : "img";
+    const imgs = it.img.map((src, i) => `<img loading="lazy" src="img/${src}" data-id="${it.id}" data-i="${i}" alt="คำตอบข้อ ${it.no}">`).join("") +
+      (it.note ? `<div class="note">${esc(it.note)}</div>` : "") + `<div class="src">📖 Cabin Crew Manual หน้า ${it.ref}</div>`;
+    if (!t) return imgs;
+    return `<div class="atabs">
+        <button data-atab="th" class="${tab === "th" ? "on" : ""}">🇹🇭 แปลไทย</button>
+        <button data-atab="img" class="${tab === "img" ? "on" : ""}">📖 คู่มือ (EN)</button>
+      </div>
+      <div class="apane" data-pane="th" ${tab === "th" ? "" : "hidden"}>${thList(t.a)}</div>
+      <div class="apane" data-pane="img" ${tab === "img" ? "" : "hidden"}>${imgs}</div>
+      ${t.ez ? `<div class="sticky ez"><b>💡 เข้าใจง่ายๆ</b>${esc(t.ez)}</div>` : ""}
+      ${t.tk ? `<div class="sticky tk"><b>🧠 ทริกจำไวๆ</b>${esc(t.tk)}</div>` : ""}`;
+  }
 
-  const headHTML = it =>
-    `${it.fleet ? `<span class="badge ${it.fleet}">${fleetName(it.fleet)}</span>` : ""}${esc(it.q)}`;
+  const headHTML = it => {
+    const t = TH[it.id], b = it.fleet ? `<span class="badge ${it.fleet}">${fleetName(it.fleet)}</span>` : "";
+    return t ? `<span class="q-th">${b}${esc(t.q)}</span><span class="q-en">${esc(it.q)}</span>` : `<span class="q-th">${b}${esc(it.q)}</span>`;
+  };
 
   // ---------- read mode ----------
   function renderRead() {
@@ -70,17 +96,17 @@
       if (it.sec !== cur) {
         cur = it.sec;
         const s = secOf(cur);
-        html += `<div class="sechead"><h2>${s.name}</h2><span>${s.th}</span></div>`;
+        html += `<div class="sechead" data-sec="${cur}"><span class="s-ico">${SEC_ICON[cur]}</span><div><h2>${s.th}</h2><span>${s.name}</span></div></div>`;
       }
       const open = S.open.has(it.id);
-      html += `<article class="item ${S.known.has(it.id) ? "known" : ""}" data-sec="${it.sec}" data-id="${it.id}">
+      html += `<article class="item ${S.known.has(it.id) ? "known" : ""} ${open ? "open" : ""}" data-sec="${it.sec}" data-id="${it.id}">
         <button class="qrow" data-toggle="${it.id}" aria-expanded="${open}">
-          <span class="num">${it.no}</span><span class="qtxt">${headHTML(it)}</span><span class="done-dot"></span>
+          <span class="num">${S.known.has(it.id) ? "✓" : it.no}</span><span class="qtxt">${headHTML(it)}</span><span class="chev">▾</span>
         </button>
         ${open ? `<div class="ans">${answerHTML(it)}
           <div class="actions">
             <button class="btn ${S.known.has(it.id) ? "" : "ok"}" data-known="${it.id}">${S.known.has(it.id) ? "ยกเลิก “จำได้แล้ว”" : "✓ จำได้แล้ว"}</button>
-            <span class="meta">CCM หน้า ${it.ref} · SafeTalk หน้า ${it.page}</span>
+            <span class="meta">SafeTalk หน้า ${it.page}</span>
           </div></div>` : ""}
       </article>`;
     }
@@ -108,13 +134,13 @@
     if (S.idx < 0) S.idx = items.length - 1;
     const it = items[S.idx], s = secOf(it.sec);
     $("#card").innerHTML = `<div class="flash" data-sec="${it.sec}">
-      <div class="tag">${s.name} · ข้อ ${it.no} · CCM ${it.ref}${S.known.has(it.id) ? " · ✓ จำได้แล้ว" : ""}</div>
+      <div class="tag">${SEC_ICON[it.sec]} ${s.th} · ข้อ ${it.no}${S.known.has(it.id) ? " · ✓ จำได้แล้ว" : ""}</div>
       <h3>${headHTML(it)}</h3>
       ${S.revealed ? `<div class="ans">${answerHTML(it)}</div>
         <div class="cardnav">
           <button class="btn" data-grade="0">ยังไม่แม่น</button>
           <button class="btn ok" data-grade="1">จำได้แล้ว</button>
-        </div>` : `<button class="reveal" id="reveal">แตะเพื่อดูคำตอบ</button>`}
+        </div>` : `<button class="reveal" id="reveal">👀 แตะเพื่อดูคำตอบ</button>`}
       </div>
       <div class="cardnav">
         <button class="btn ghost" data-step="-1">‹ ก่อนหน้า</button>
@@ -193,6 +219,13 @@
     if (d.mode) { S.mode = d.mode; save(); render(); scrollTo(0, 0); return; }
     if (d.sec) { S.sec = d.sec; S.idx = 0; S.revealed = false; save(); render(); return; }
     if (d.fleet) { S.fleet = d.fleet; S.idx = 0; S.revealed = false; save(); render(); return; }
+    if (d.atab) {
+      S.atab = d.atab; save();
+      const box = t.closest(".ans") || t.closest(".flash");
+      box.querySelectorAll("[data-atab]").forEach(b => b.classList.toggle("on", b.dataset.atab === d.atab));
+      box.querySelectorAll("[data-pane]").forEach(p => (p.hidden = p.dataset.pane !== d.atab));
+      return;
+    }
     if (d.toggle) { S.open.has(d.toggle) ? S.open.delete(d.toggle) : S.open.add(d.toggle); renderRead(); return; }
     if (d.known) {
       S.known.has(d.known) ? S.known.delete(d.known) : S.known.add(d.known);

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>SafeTalk Q3/2026</title>
-<meta name="theme-color" content="#0f2a44">
+<meta name="theme-color" content="#ffd6e2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="SafeTalk">
@@ -18,7 +18,7 @@
 <header class="top">
   <div class="brand">
     <div>
-      <h1>SafeTalk <span>Q3/2026</span></h1>
+      <h1>SafeTalk <span class="q">Q3/2026</span><span class="plane">✈️</span></h1>
       <p class="sub">ทบทวน Safety · First Aid · Security <button id="verBtn" class="ver" aria-label="เวอร์ชันและอัปเดต">v<span id="verTxt"></span> ⟳</button></p>
     </div>
     <div class="ring" id="ring" title="ความคืบหน้า">
@@ -36,13 +36,13 @@
 
 <main>
   <section id="filters">
-    <div class="search"><input id="q" type="search" placeholder="ค้นหาคำถาม เช่น turbulence, ELT, infant…" autocomplete="off"></div>
+    <div class="search"><input id="q" type="search" placeholder="ค้นหาไทยหรืออังกฤษ เช่น ประตู, ELT, ทารก…" autocomplete="off"></div>
     <div class="chips" id="secChips"></div>
     <div class="chips fleet" id="fleetChips">
-      <span class="lbl">เครื่องบิน</span>
+      <span class="lbl">✈️ เครื่อง</span>
       <button data-fleet="all" class="on">ทั้งหมด</button>
-      <button data-fleet="A">Airbus</button>
-      <button data-fleet="B">Boeing</button>
+      <button data-fleet="A">🩷 Airbus</button>
+      <button data-fleet="B">💙 Boeing</button>
     </div>
   </section>
 
@@ -88,6 +88,7 @@
 
 <script src="version.js"></script>
 <script src="data.js"></script>
+<script src="th.js"></script>
 <script src="gamedata.js"></script>
 <script src="game.js"></script>
 <script src="app.js"></script>
