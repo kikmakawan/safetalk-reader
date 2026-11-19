@@ -134,14 +134,17 @@
 
   function render() {
     document.querySelectorAll(".modes button").forEach(b => b.classList.toggle("on", b.dataset.mode === S.mode));
-    $("#filters").hidden = S.mode === "pages";
+    $("#filters").hidden = S.mode === "pages" || S.mode === "game";
+    $("#game").hidden = S.mode !== "game";
     $("#read").hidden = S.mode !== "read";
     $("#cards").hidden = S.mode !== "cards";
     $("#pages").hidden = S.mode !== "pages";
     chips(); ring();
     if (S.mode === "read") renderRead();
     else if (S.mode === "cards") renderCards();
+    else if (S.mode === "game") window.STGame.show(S.fleet);
     else renderPages();
+    if (S.mode !== "game") window.STGame.hide();
   }
 
   // ---------- viewer ----------
@@ -166,6 +169,7 @@
     const base = Math.min(box.clientWidth / img.naturalWidth, box.clientHeight / img.naturalHeight);
     img.style.width = img.naturalWidth * base * V.z + "px";
   }
+  window.STViewer = openViewer;
   function closeV() { $("#viewer").hidden = true; document.body.style.overflow = ""; }
   $("#vIn").onclick = () => { V.z = Math.min(V.z * 1.5, 6); fitV(); };
   $("#vOut").onclick = () => { V.z = Math.max(V.z / 1.5, 1); fitV(); };
