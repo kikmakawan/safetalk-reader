@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SafeTalk Q3/2026</title>
+<meta name="theme-color" content="#0f2a44">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SafeTalk">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <div>
+      <h1>SafeTalk <span>Q3/2026</span></h1>
+      <p class="sub">ทบทวนคำถาม Safety · First Aid · Security</p>
+    </div>
+    <div class="ring" id="ring" title="ความคืบหน้า">
+      <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" class="bg"/><circle cx="18" cy="18" r="15.5" class="fg" id="ringFg"/></svg>
+      <b id="ringTxt">0/0</b>
+    </div>
+  </div>
+  <nav class="modes" role="tablist">
+    <button data-mode="read" class="on">อ่าน</button>
+    <button data-mode="cards">แฟลชการ์ด</button>
+    <button data-mode="pages">หน้าต้นฉบับ</button>
+  </nav>
+</header>
+
+<main>
+  <section id="filters">
+    <div class="search"><input id="q" type="search" placeholder="ค้นหาคำถาม เช่น turbulence, ELT, infant…" autocomplete="off"></div>
+    <div class="chips" id="secChips"></div>
+    <div class="chips fleet" id="fleetChips">
+      <span class="lbl">เครื่องบิน</span>
+      <button data-fleet="all" class="on">ทั้งหมด</button>
+      <button data-fleet="A">Airbus</button>
+      <button data-fleet="B">Boeing</button>
+    </div>
+  </section>
+
+  <section id="read"></section>
+
+  <section id="cards" hidden>
+    <div class="cardbar">
+      <label><input type="checkbox" id="onlyTodo"> เฉพาะข้อที่ยังไม่จำ</label>
+      <button id="shuffle" class="ghost">สุ่มลำดับ</button>
+    </div>
+    <div id="card"></div>
+  </section>
+
+  <section id="pages" hidden></section>
+</main>
+
+<div id="viewer" hidden>
+  <div class="vbar">
+    <button id="vOut" aria-label="ซูมออก">−</button>
+    <button id="vIn" aria-label="ซูมเข้า">+</button>
+    <span id="vCount"></span>
+    <button id="vClose" aria-label="ปิด">✕</button>
+  </div>
+  <div class="vscroll" id="vScroll"><img id="vImg" alt=""></div>
+  <button class="vnav prev" id="vPrev" aria-label="ก่อนหน้า">‹</button>
+  <button class="vnav next" id="vNext" aria-label="ถัดไป">›</button>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

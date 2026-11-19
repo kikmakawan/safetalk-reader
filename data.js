@@ -1,0 +1,60 @@
+// SafeTalk Q3/2026 — questions and cropped answer images (source: SAFETALK Q3/2026 by Gryffindor)
+// fleet: null = both, 'A' = Airbus, 'B' = Boeing. page = page number in the original PDF.
+window.SAFETALK = {
+  title: "SafeTalk Q3/2026",
+  by: "Gryffindor",
+  sections: [
+    { id: "safety", name: "Safety & Procedures", th: "ความปลอดภัย / ขั้นตอน" },
+    { id: "firstaid", name: "First Aid", th: "ปฐมพยาบาล" },
+    { id: "security", name: "Security", th: "การรักษาความปลอดภัย" }
+  ],
+  items: [
+    { id: "g1", sec: "safety", no: "1", page: 1, q: "What shall Cabin Crew members be assigned to duties, and operate, on a particular aircraft type or variant according to CAAT regulations?", img: ["g1.jpg"] },
+    { id: "g2", sec: "safety", no: "2", page: 1, q: "What is the procedure of a non-commercial operations flight without passengers?", img: ["g2.jpg"] },
+    { id: "g3", sec: "safety", no: "3", page: 1, q: "How long shall Cabin Crew not undertake flying duties when acting as Blood and Bone Marrow donors?", img: ["g3.jpg"] },
+    { id: "g4", sec: "safety", no: "4", page: 1, q: "What are Cabin Crew actions in case of Unanticipated Turbulence?", img: ["g4.jpg"] },
+    { id: "g5", sec: "safety", no: "5", page: 1, q: "What are the cabin conditions in case of Moderate Turbulence?", img: ["g5.jpg"] },
+    { id: "g6", sec: "safety", no: "6", page: 1, q: "What are the conditions to carry a Large Musical Instrument / Diplomatic Bag onboard?", img: ["g6.jpg"] },
+    { id: "g7", sec: "safety", no: "7", page: 2, q: "What is the procedure to apply In-Seat Electrical Power Supplies?", img: ["g7.jpg"] },
+    { id: "g8", sec: "safety", no: "8", page: 2, q: "What are the PA announcements that Cabin Crew shall make during in-flight duties?", img: ["g8.jpg"] },
+    { id: "g9", sec: "safety", no: "9", page: 2, q: "When does the Sterile Flight Crew Compartment and No Contact Period start and end?", img: ["g9.jpg"] },
+    { id: "g10", sec: "safety", no: "10", page: 2, q: "What is the procedure of Re-Opening of Doors in Case of Abnormalities?", img: ["g10.jpg"] },
+    { id: "g11", sec: "safety", no: "11", page: 2, q: "What are the Categories of Passengers with Reduced Mobility (PRM)?", img: ["g11.jpg"] },
+    { id: "g12", sec: "safety", no: "12", page: 2, q: "What are the conditions to be carried with Pregnancy between 28 weeks to 32 weeks (inclusive)?", img: ["g12.jpg"] },
+    { id: "g13a", sec: "safety", no: "13", fleet: "A", page: 3, q: "How to operate the Emergency Locator Transmitter (ELT)? (following aircraft assignment)", img: ["g13a-1.jpg", "g13a-2.jpg", "g13a-3.jpg", "g13a-4.jpg"] },
+    { id: "g13b", sec: "safety", no: "13", fleet: "B", page: 2, q: "How to operate the Water Fire Extinguisher?", img: ["g13b.jpg"] },
+    { id: "g14", sec: "safety", no: "14", page: 3, q: "How to operate the emergency lighting?", img: ["g14.jpg"] },
+    { id: "g15a", sec: "safety", no: "15", fleet: "A", page: 3, q: "What is the procedure of opening the door in case of Emergency – Crash Land?", img: ["g15a.jpg"] },
+    { id: "g15b", sec: "safety", no: "15", fleet: "B", page: 3, q: "What is the procedure of opening the door in case of Emergency – Crash Land?", img: ["g15b.jpg"] },
+    { id: "g16", sec: "safety", no: "16", page: 4, q: "What are the conditions under which Cabin Crew may initiate an evacuation without awaiting the Commander's decision?", img: ["g16.jpg"] },
+    { id: "g17", sec: "safety", no: "17", page: 4, q: "What is the brace position for Cabin Crew in an Aft-Facing Seat?", img: ["g17.jpg"] },
+    { id: "g18", sec: "safety", no: "18", page: 4, q: "What is the Ditching Evacuation Command (without raft)?", img: ["g18.jpg"] },
+    { id: "g19a", sec: "safety", no: "19", fleet: "A", page: 4, q: "How to brief the 1st PSP in Thai?", img: ["g19a.jpg"] },
+    { id: "g19b", sec: "safety", no: "19", fleet: "B", page: 4, q: "How to brief the 1st PSP in Thai (Crash Land and Ditching for P4)?", img: ["g19b.jpg"] },
+    { id: "g20", sec: "safety", no: "20", page: 4, q: "What are Cabin Crew actions in case of Lavatory Fire (door is hot)?", img: ["g20.jpg"] },
+
+    { id: "f1", sec: "firstaid", no: "1", page: 5, q: "How to operate the POB with 01 outlet (Flow Selector Knob on side)?", img: ["f1.jpg"] },
+    { id: "f2", sec: "firstaid", no: "2", page: 5, q: "What are the signs of life?", img: ["f2.jpg"] },
+    { id: "f3", sec: "firstaid", no: "3", page: 5, q: "What are the contents of the SAMPLE Technique?", img: ["f3.jpg"] },
+    { id: "f4", sec: "firstaid", no: "4", page: 5, q: "What are Cabin Crew actions when performing D – Danger?", img: ["f4.jpg"] },
+    { id: "f5", sec: "firstaid", no: "5", page: 5, q: "How to open A – Airway for an infant?", img: ["f5.jpg"] },
+    { id: "f6", sec: "firstaid", no: "6", page: 5, q: "What are the signs and symptoms of Fainting?", img: ["f6.jpg"] },
+    { id: "f7", sec: "firstaid", no: "7", page: 6, q: "What is the management of Total Choking – Conscious Infant?", img: ["f7.jpg"] },
+    { id: "f8", sec: "firstaid", no: "8", page: 6, q: "What is the management of Cardiac Arrest?", img: ["f8.jpg"] },
+    { id: "f9", sec: "firstaid", no: "9", page: 6, q: "What is the management of Stroke (conscious)?", img: ["f9.jpg"] },
+    { id: "f10", sec: "firstaid", no: "10", page: 6, q: "What are the causes of Seizures in Children?", img: ["f10.jpg"] },
+    { id: "f11", sec: "firstaid", no: "11", page: 6, q: "What are the signs and symptoms of Abdominal Emergencies?", img: ["f11.jpg"] },
+    { id: "f12", sec: "firstaid", no: "12", page: 6, q: "What is the management of a Close Wound?", img: ["f12.jpg"] },
+    { id: "f13", sec: "firstaid", no: "13", page: 7, q: "What is the management of Bone and Joint Sprain?", img: ["f13.jpg"] },
+    { id: "f14", sec: "firstaid", no: "14", page: 7, q: "What is the management of Asthma?", img: ["f14.jpg"] },
+    { id: "f15", sec: "firstaid", no: "15", page: 7, q: "What are the signs and symptoms of Airsickness?", img: ["f15.jpg"] },
+
+    { id: "s1", sec: "security", no: "1", page: 7, q: "What shall Cabin Crew monitor when performing an Aircraft Security Search / Check?", img: ["s1.jpg"] },
+    { id: "s2", sec: "security", no: "2", page: 8, q: "How many life vests shall Cabin Crew randomly check while performing an aircraft security check or search (referred to the threat level of each station)?", img: ["s2.jpg"],
+      note: "Level 1–3: check 10 life vests · Level 4: Airbus 23 / Boeing 24 life vests" },
+    { id: "s3", sec: "security", no: "3", page: 8, q: "What information must Cabin Crew give the Flight Crew when a hijacker is observed onboard?", img: ["s3.jpg"] },
+    { id: "s4", sec: "security", no: "4", page: 8, q: "What are the prohibited actions when Cabin Crew find a suspicious item (bomb) onboard?", img: ["s4.jpg"] },
+    { id: "s5", sec: "security", no: "5", page: 8, q: "What is the Cabin Crew response prior to departure during Level 1 Disruptive Behavior, including suspicious or verbally threatening behavior?", img: ["s5.jpg"] }
+  ],
+  pages: 8
+};
