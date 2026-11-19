@@ -80,7 +80,7 @@
         ${open ? `<div class="ans">${answerHTML(it)}
           <div class="actions">
             <button class="btn ${S.known.has(it.id) ? "" : "ok"}" data-known="${it.id}">${S.known.has(it.id) ? "ยกเลิก “จำได้แล้ว”" : "✓ จำได้แล้ว"}</button>
-            <span class="meta">หน้า ${it.page} ในต้นฉบับ</span>
+            <span class="meta">CCM หน้า ${it.ref} · SafeTalk หน้า ${it.page}</span>
           </div></div>` : ""}
       </article>`;
     }
@@ -108,7 +108,7 @@
     if (S.idx < 0) S.idx = items.length - 1;
     const it = items[S.idx], s = secOf(it.sec);
     $("#card").innerHTML = `<div class="flash" data-sec="${it.sec}">
-      <div class="tag">${s.name} · ข้อ ${it.no}${S.known.has(it.id) ? " · ✓ จำได้แล้ว" : ""}</div>
+      <div class="tag">${s.name} · ข้อ ${it.no} · CCM ${it.ref}${S.known.has(it.id) ? " · ✓ จำได้แล้ว" : ""}</div>
       <h3>${headHTML(it)}</h3>
       ${S.revealed ? `<div class="ans">${answerHTML(it)}</div>
         <div class="cardnav">
