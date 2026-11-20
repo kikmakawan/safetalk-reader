@@ -188,4 +188,101 @@ window.GAMEDATA = {
     { s: "If a suspicious item is found, cut any strings or wires to disarm it.", v: false, x: "DO NOT touch, cut strings/wires, open containers or disconnect wires.", ref: "5-93" },
     { s: "If a suspicious item is found, reseat passengers away from the bomb if possible.", v: true, x: "Also notify the Commander and remain calm.", ref: "5-93" },
   ],
+  // ---------- จับคู่การ์ด (memory pairs): a = term, b = value ----------
+  pairs: [
+    { a: "Blood donation – no flying", b: "24 hours", ref: "1-28" },
+    { a: "ELT 406 MHz transmits", b: "24 hours", ref: "3-65" },
+    { a: "ELT 121.5 / 243 MHz transmits", b: "48 hours", ref: "3-65" },
+    { a: "ELT effective range", b: "200–250 NM", ref: "3-65" },
+    { a: "ELT satellite frequency", b: "406 MHz", ref: "3-65" },
+    { a: "ELT civil frequency", b: "121.5 MHz", ref: "3-65" },
+    { a: "ELT military frequency", b: "243 MHz", ref: "3-65" },
+    { a: "Large instrument on seat – max", b: "75 kg", ref: "2-40" },
+    { a: "Pregnancy certificate valid", b: "7 days", ref: "2-80" },
+    { a: "Pregnancy – carriage not permitted", b: "33 weeks +", ref: "2-80" },
+    { a: "Pregnancy – no certificate up to", b: "27 weeks", ref: "2-80" },
+    { a: "Interphone attempts before crew evacuates", b: "2 attempts", ref: "5-9" },
+    { a: "Aft-facing brace – knees bent", b: "90°", ref: "5-35" },
+    { a: "Water extinguisher duration", b: "30 seconds", ref: "3-93" },
+    { a: "Water extinguisher range", b: "6–7 m", ref: "3-93" },
+    { a: "Emergency lights battery", b: "10 minutes", ref: "4-56" },
+    { a: "POB minimum pressure", b: "1500 PSI", ref: "3-32" },
+    { a: "POB flow rate", b: "2 or 4 LPM", ref: "3-32" },
+    { a: "Infant choking – back slaps", b: "Up to 5", ref: "6-37" },
+    { a: "Normal pulse – adult", b: "60–80 bpm", ref: "6-11" },
+    { a: "Normal pulse – child", b: "80–100 bpm", ref: "6-11" },
+    { a: "Normal pulse – infant", b: "100–120 bpm", ref: "6-11" },
+    { a: "Life vest check – Threat Level 1–3", b: "20%", ref: "2-33" },
+    { a: "Life vest check – Threat Level 4", b: "50%", ref: "2-33" },
+    { a: "PSU life vest push bars – visual check", b: "100%", ref: "2-33" },
+    { a: "Doors armed on flight without passengers", b: "D1L & D1R", ref: "1-14" },
+    { a: "Close wound – ice on / off", b: "5 min / 5 min", ref: "6-60" },
+  ],
+
+  // ---------- ตัวไหนไม่ใช่ (odd one out) ----------
+  // g = group: intruders come from another list in the same group
+  odd: [
+    { g: "signs", t: "Signs of life", ref: "6-11", m: ["Breathing", "Pulse present", "Pupils react to light", "Conscious or unconscious"] },
+    { g: "signs", t: "Fainting – signs and symptoms", ref: "6-31", m: ["Pale face", "Nausea", "Unsteadiness", "Cold sweat"] },
+    { g: "signs", t: "Airsickness – signs and symptoms", ref: "6-66", m: ["Nausea and vomiting", "Headache", "Dizziness, drowsiness", "Pale and distressed"] },
+    { g: "signs", t: "Abdominal emergency – signs and symptoms", ref: "6-47", m: ["Severe abdominal pain", "Vomiting frequently", "High temperature", "Shock"] },
+    { g: "signs", t: "Asthma – signs and symptoms", ref: "6-44", m: ["Wheezing sound of breathing", "Difficulty in speaking and whispering", "Thick sputum", "Blue/cyanosis", "Distress and anxiety", "Coughing"] },
+    { g: "signs", t: "Stroke – signs and symptoms", ref: "6-43", m: ["Sudden severe headache", "Red/flushed face", "Blurring of vision", "Paralysis of one side of the body", "Dribbling of saliva", "Slurred speech"] },
+    { g: "signs", t: "Cardiac arrest – signs and symptoms", ref: "6-42", m: ["Sudden collapse", "Unconscious", "Skin becomes grey", "No breathing, no body movement"] },
+    { g: "care", t: "Fainting – management", ref: "6-31", m: ["Administer oxygen", "Raise legs and loosen tight clothing", "Cold towel on forehead", "Monitor and reassure casualty", "Don't stand casualty until fully recovered"] },
+    { g: "care", t: "Asthma – management", ref: "6-44", m: ["Loosen tight clothing", "Self-administer Ventolin", "Support sitting in comfortable position", "Administer oxygen", "Seek immediate aid"] },
+    { g: "care", t: "Airsickness – management", ref: "6-66", m: ["Reassure and recline seat", "Loosen clothing and open air vent", "Offer airsickness bag", "Cold compress at forehead"] },
+    { g: "care", t: "Abdominal emergency – management", ref: "6-47", m: ["Nothing by mouth", "Reassure and calm the casualty", "Place in a comfortable position", "Inform Commander, Purser and page for Doctor"] },
+    { g: "care", t: "Stroke (conscious) – management", ref: "6-43", m: ["Administer oxygen", "Loosen tight clothing", "Lie down, head and shoulders slightly raised", "Incline head to the affected side", "Towel on shoulder to absorb dripping", "Reassure the casualty"] },
+    { g: "cause", t: "Fainting – causes", ref: "6-31", m: ["Nervous reaction to pain/fright", "Exhaustion", "Emotional upset", "Sudden change of posture"] },
+    { g: "cause", t: "Asthma – causes", ref: "6-44", m: ["Allergy reaction", "Emotional stress", "Extreme temperature"] },
+    { g: "cause", t: "Abdominal emergency – causes", ref: "6-47", m: ["Acute appendicitis", "Perforated gastric ulcer", "Obstruction of the intestine"] },
+    { g: "cause", t: "Airsickness – related to", ref: "6-66", m: ["Turbulence", "Anxiety", "Fear", "Over-indulgence in food and alcohol"], x: ["Nervous reaction to pain/fright", "Emotional upset", "Emotional stress"] },
+    { g: "safety", t: "Crew may initiate an evacuation when…", ref: "5-9", m: ["No response after 2 interphone attempts", "Heavy smoke inside or outside", "Fire", "Severe structural damage", "Another Cabin Crew has started evacuation"] },
+    { g: "safety", t: "Hijack – information to give the Flight Crew", ref: "5-81", m: ["Number of hijackers", "Sex", "Nationality", "Language spoken", "Weapons", "Description", "Demands"] },
+    { g: "safety", t: "Suspicious item – DO NOT", ref: "5-93", m: ["Touch or move the article", "Cut any strings, wires or tape", "Open closed containers/compartments", "Disconnect electrical connections"] },
+    { g: "safety", t: "Suspicious item – DO", ref: "5-93", m: ["Notify the Commander immediately", "Remain calm", "Reseat passengers away from the bomb", "Pad the area with wet pillows and blankets"] },
+    { g: "safety", t: "CAAT conditions to be assigned duties", ref: "1-6", m: ["Valid Cabin Crew Initial Training Certificate", "Qualified on the aircraft type", "Comply with CAAT requirements", "Wear TVJ cabin crew uniform"] },
+    { g: "safety", t: "Large instrument on a seat – conditions", ref: "2-40", m: ["Extra seat purchased", "Owner travels on the flight", "Last row window seat", "Max 75 kg, secured with seatbelt"] },
+    { g: "safety", t: "Brace position – aft-facing seat", ref: "5-35", m: ["Cross arms in front of chest", "Feet flat on the floor", "Head firmly against seat back", "Knees bent at 90 degrees"] },
+    { g: "equip", t: "Water extinguisher – pre-flight check", ref: "3-93", m: ["CO2 cartridge visible in handle", "Safety wire seal intact", "Nozzle not clogged", "Locked in bracket"] },
+    { g: "equip", t: "POB – pre-flight check", ref: "3-32", m: ["Pressure at least 1500 PSI", "Mask clean and not expired", "Tubing not cracked, twisted or kinked", "Tube connected to outlet", "Locked in bracket"] },
+    { g: "cabin", t: "Light turbulence – cabin", ref: "1-54", m: ["Liquids shaking, not splashing", "Carts maneuvered with little difficulty", "Slight strain against seat belts"] },
+    { g: "cabin", t: "Moderate turbulence – cabin", ref: "1-54", m: ["Liquids splashing out of cups", "Difficulty maneuvering carts", "Difficulty walking in the cabin", "Difficulty standing without holding on", "Definite strain against seat belts"] },
+    { g: "cabin", t: "Severe turbulence – cabin", ref: "1-54", m: ["Items falling or lifting off the floor", "Loose items tossed about the cabin", "Impossible to walk", "Forced violently against seat belts"] },
+    { g: "prm", t: "Ambulatory PRM – examples", ref: "2-72", m: ["Blind", "Deaf", "Intellectual disability"] },
+    { g: "prm", t: "Non-ambulatory PRM – examples", ref: "2-72", m: ["Paralysis", "Both deaf and blind", "Seriously ill"] },
+  ],
+
+  // ---------- แยกหมวดไว (sort rush) ----------
+  sort: [
+    { t: "Turbulence level", ref: "1-54", b: ["Light", "Moderate", "Severe"], i: [
+      ["Liquids shaking, not splashing", 0], ["Carts maneuvered with little difficulty", 0], ["Slight strain against seat belts", 0],
+      ["Liquids splashing out of cups", 1], ["Difficulty maneuvering carts", 1], ["Difficulty standing without holding on", 1], ["Definite strain against seat belts", 1],
+      ["Items falling or lifting off the floor", 2], ["Loose items tossed about the cabin", 2], ["Impossible to walk", 2], ["Forced violently against seat belts", 2] ] },
+    { t: "Pregnant passenger", ref: "2-80", b: ["No certificate", "Doctor certificate", "Not permitted"], i: [
+      ["20 weeks", 0], ["25 weeks", 0], ["27 weeks", 0], ["28 weeks", 1], ["30 weeks", 1], ["32 weeks", 1], ["33 weeks", 2], ["35 weeks", 2], ["38 weeks", 2] ] },
+    { t: "Suspicious item found", ref: "5-93", b: ["✅ DO", "🚫 DO NOT"], i: [
+      ["Touch or move the article", 1], ["Cut strings, wires or tape", 1], ["Open closed containers", 1], ["Disconnect electrical connections", 1],
+      ["Notify the Commander immediately", 0], ["Remain calm", 0], ["Reseat passengers away", 0], ["Pad the area with wet pillows and blankets", 0] ] },
+    { t: "Emergency door opening – which aircraft?", ref: "4-91 / 7-78", b: ["Airbus A320", "Boeing 737"], i: [
+      ["Check yellow arming lever fully DOWN in ARMED", 0], ["Raise door control handle, Power Assist takes over", 0], ["If Power Assist fails, push door out and forward", 0],
+      ["Check the girt bar is engaged", 1], ["Check the Red Flag across viewing window", 1], ["Rotate handle, push door with considerable force", 1] ] },
+    { t: "Passenger with Reduced Mobility", ref: "2-72", b: ["Ambulatory", "Non-ambulatory"], i: [
+      ["Blind", 0], ["Deaf", 0], ["Intellectual disability", 0], ["Paralysis", 1], ["Both deaf and blind", 1], ["Seriously ill", 1] ] },
+    { t: "Fainting", ref: "6-31", b: ["Sign", "Cause", "Care"], i: [
+      ["Pale face", 0], ["Nausea", 0], ["Unsteadiness", 0], ["Cold sweat", 0],
+      ["Nervous reaction to pain/fright", 1], ["Exhaustion", 1], ["Sudden change of posture", 1],
+      ["Raise legs", 2], ["Cold towel on forehead", 2], ["Administer oxygen", 2] ] },
+    { t: "Asthma", ref: "6-44", b: ["Sign", "Cause", "Care"], i: [
+      ["Wheezing sound of breathing", 0], ["Thick sputum", 0], ["Blue/cyanosis", 0], ["Coughing", 0],
+      ["Allergy reaction", 1], ["Emotional stress", 1], ["Extreme temperature", 1],
+      ["Self-administer Ventolin", 2], ["Support sitting in comfortable position", 2], ["Loosen tight clothing", 2] ] },
+    { t: "Life vest random inspection", ref: "2-33", b: ["20%", "50%", "100%"], i: [
+      ["Threat Level 1", 0], ["Threat Level 2", 0], ["Threat Level 3", 0], ["Threat Level 4", 1], ["Push bars alignment (vest in PSU)", 2] ] },
+    { t: "ELT frequency", ref: "3-65", b: ["121.5 MHz", "243 MHz", "406 MHz"], i: [
+      ["Civil distress", 0], ["Military distress", 1], ["Satellite distress", 2] ] },
+    { t: "Ditching evacuation command", ref: "5-42", b: ["Both", "Unprepared only"], i: [
+      ["Release Seatbelt", 0], ["Leave Everything", 0], ["Come this way", 0], ["Hurry x 2", 0], ["Stand Back x 2", 0], ["Shoes off", 1], ["Put Life Vest On", 1] ] },
+  ],
 };
