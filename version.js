@@ -1,6 +1,6 @@
 // Bump all three together when releasing: version.js, version.json, CACHE in sw.js
 window.APP_VERSION = {
-  v: "2.0.0",
+  v: "2.0.1",
   date: "21 Nov 2026",
   notes: {
     en: [

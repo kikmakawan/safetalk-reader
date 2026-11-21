@@ -27,7 +27,7 @@
           <button data-ex-set="type" data-v="written" class="ex-type ${setup.type === "written" ? "on" : ""}"><b>✍️ ${t("ex_written")}</b><small>${t("ex_written_d")}</small></button>
         </div>
         <h4>${t("ex_count")}</h4>${chipRow("n", [[10, "10"], [20, "20"], [30, "30"], [999, t("ex_all")]])}
-        <h4>${t("ex_time")}</h4>${chipRow("mins", [[0, t("ex_notime")], [10, "10 min"], [20, "20 min"], [30, "30 min"]])}
+        <h4>${t("ex_time")}</h4>${chipRow("mins", [[0, t("ex_notime")], [10, t("ex_min", { n: 10 })], [20, t("ex_min", { n: 20 })], [30, t("ex_min", { n: 30 })]])}
         <h4>${t("ex_sec")}</h4>${chipRow("sec", [["all", t("all")], ...ST.D.sections.map(s => [s.id, ST.SEC_ICON[s.id] + " " + s.name])])}
         <button class="btn ok ex-start" data-ex="start">${t("ex_start", { n: Math.min(setup.n, pool().length) })}</button>
         <p class="g-foot">${t("ex_pass")} · ${t("g_fleet")}: <b>${fleet === "all" ? t("fleet_all") : fleet === "A" ? "Airbus" : "Boeing"}</b></p>
