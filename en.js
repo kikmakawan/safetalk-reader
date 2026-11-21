@@ -1,5 +1,5 @@
 // English "Simply put" + "Memory trick" for every question (based on CCM Iss.04 Rev.03)
-window.EN = {
+(window.EN_Q = window.EN_Q || {})["2026Q3"] = {
   g1:  { ez: "Four things before you can work a type: the certificate, the type rating, the CAAT rules and the uniform.", tk: "C-T-R-U: Certificate · Type · Rules · Uniform 📄✈️📜👗" },
   g2:  { ez: "No passengers, but full safety still applies. Flight crew secures loose items and only the front pair of doors is used.", tk: "Empty cabin = Door 1 only → D1L + D1R 🚪1️⃣🚪" },
   g3:  { ez: "Blood: tell the Company and rest 24 h before reporting. Bone marrow: aviation doctor certificate first, and tell CCD.", tk: "One bag of blood = one day off 🩸➡️🌙 · Marrow = Medic first 👨‍⚕️" },

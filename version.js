@@ -1,15 +1,21 @@
 // Bump all three together when releasing: version.js, version.json, CACHE in sw.js
 window.APP_VERSION = {
-  v: "1.6.0",
+  v: "2.0.0",
   date: "21 Nov 2026",
   notes: {
     en: [
-      "4 new games: 🃏 Memory Pairs · 🕵️ Odd One Out · 🗂️ Sort Rush · 🔥 Marathon",
-      "8 games in total, each with Easy / Medium / Hard",
+      "📝 Mock exam: multiple choice (auto-graded) or written/spoken (self-check)",
+      "🔊 Read aloud and 🎤 answer by voice or typing, with key-word matching",
+      "👤 Me tab: stats, 7-day chart, weak questions, exam history",
+      "🔥 Daily streak + goal, 🏅 19 badges to unlock",
+      "⚙️ Text size, light/dark theme, backup & move progress, quarter picker",
     ],
     th: [
-      "เกมใหม่ 4 เกม: 🃏 จับคู่การ์ด · 🕵️ ตัวไหนไม่ใช่ · 🗂️ แยกหมวดไว · 🔥 มาราธอน",
-      "รวมทั้งหมด 8 เกม ทุกเกมมี 3 ระดับ",
+      "📝 สอบเสมือนจริง: เลือกตอบ (ตรวจอัตโนมัติ) หรือ เขียน/พูดตอบ (ตรวจเอง)",
+      "🔊 ฟังเสียงอ่าน และ 🎤 พูดหรือพิมพ์ตอบ พร้อมเทียบคำสำคัญ",
+      "👤 แท็บ ฉัน: สถิติ กราฟ 7 วัน ข้อที่ควรฝึก ประวัติสอบ",
+      "🔥 Streak รายวัน + เป้าหมาย และ 🏅 เหรียญ 19 แบบ",
+      "⚙️ ขนาดตัวอักษร ธีมสว่าง/มืด สำรองข้อมูล และเลือกไตรมาส",
     ],
   },
 };

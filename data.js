@@ -1,7 +1,11 @@
 // SafeTalk Q3/2026 questions (by Gryffindor). Answers cropped from the Cabin Crew Manual Iss.04 Rev.03 (TR02).
 // ref = CCM page number(s).
 // fleet: null = both, 'A' = Airbus, 'B' = Boeing. page = page number in the original PDF.
-window.SAFETALK = {
+(window.QUARTERS = window.QUARTERS || {})["2026Q3"] = {
+  id: "2026Q3",
+  short: "Q3/2026",
+  imgBase: "img/",
+  pagesBase: "pages/",
   title: "SafeTalk Q3/2026",
   by: "Gryffindor",
   sections: [

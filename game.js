@@ -37,10 +37,10 @@
         if (L.same && same.length >= L.opts - 1) cand = same;
         else if (G.lv === "easy" && other.length >= L.opts - 1) cand = other;
         G.opts = shuffle([it, ...shuffle(cand).slice(0, L.opts - 1)]);
-        G.zoom = it.img.map(s => "img/" + s);
+        G.zoom = it.img.map(s => (D.imgBase || "img/") + s);
         return `<div class="g-card">
             <div class="g-ask">${t("g_match_q")} <small>${t("g_zoom")}</small></div>
-            <div class="g-imgs">${it.img.map((s, i) => `<img src="img/${s}" data-g-zoom="${i}" alt="">`).join("")}</div>
+            <div class="g-imgs">${it.img.map((s, i) => `<img src="${D.imgBase || "img/"}${s}" data-g-zoom="${i}" alt="">`).join("")}</div>
             ${it.note ? `<div class="note">${esc(it.note)}</div>` : ""}
           </div>
           <div class="g-opts">${G.opts.map((o, i) => `<button class="g-opt" data-g-pick="${i}"><span class="g-key">${"ABCD"[i]}</span><span>${fleetTag(o.fleet)}${esc(o.q)}${LANG() === "th" && window.TH && TH[o.id] ? `<span class="g-th">${esc(TH[o.id].q)}</span>` : ""}</span></button>`).join("")}</div>`;
@@ -350,6 +350,10 @@
       const r = G.g.pick(-1, it); const btn = document.querySelectorAll("[data-g-pick]")[r.right];
       if (btn) btn.classList.add("right"); info = r.info;
     }
+    if (window.STATS) {
+      const qid = G.gk === "match" ? it.id : G.gk === "marathon" && it.k === "match" ? it.it.id : null;
+      qid ? STATS.rec(qid, ok) : STATS.act(1);
+    }
     let msg;
     if (ok) {
       G.streak++; G.right++; G.bestStreak = Math.max(G.bestStreak, G.streak);
@@ -402,6 +406,7 @@
         <button class="btn ghost g-full" data-g-hub>${t("g_other2")}</button>
       </div>`;
     if (stars === 3) confetti();
+    window.STATS && STATS.game(G.gk, G.lv, { stars, score: G.score, right: G.right });
     scrollTo(0, 0);
   }
 
@@ -416,6 +421,8 @@
     }
     document.body.appendChild(box); setTimeout(() => box.remove(), 3800);
   }
+  window.STConfetti = confetti;
+  document.addEventListener("st-confetti", confetti);
   function stop() { if (timer) { clearInterval(timer); timer = null; } }
 
   document.addEventListener("click", e => {

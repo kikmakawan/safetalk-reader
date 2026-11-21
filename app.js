@@ -1,7 +1,9 @@
 (() => {
   const D = window.SAFETALK;
   const $ = (s, el = document) => el.querySelector(s);
-  const KEY = "safetalk-q3-2026";
+  const KEY = window.QID === "2026Q3" ? "safetalk-q3-2026" : "safetalk-" + window.QID;
+  window.QKEY = KEY;
+  const IMG = D.imgBase || "img/", PAGES = D.pagesBase || "pages/";
   const store = (() => {
     try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; }
   })();
@@ -17,6 +19,7 @@
     revealed: false,
     onlyTodo: !!store.onlyTodo,
     atab: typeof store.atab === "object" && store.atab ? store.atab : { en: "img", th: "th" },
+    myAns: "",
   };
   const save = () => {
     try {
@@ -71,7 +74,7 @@
   }
   function answerHTML(it) {
     const th = TH[it.id], notes = isTH() ? th : EN[it.id], tab = th ? S.atab[LANG()] : "img";
-    const imgs = it.img.map((src, i) => `<img loading="lazy" src="img/${src}" data-id="${it.id}" data-i="${i}" alt="Answer ${it.no}">`).join("") +
+    const imgs = it.img.map((src, i) => `<img loading="lazy" src="${IMG}${src}" data-id="${it.id}" data-i="${i}" alt="Answer ${it.no}">`).join("") +
       (it.note ? `<div class="note">${esc(it.note)}</div>` : "") + `<div class="src">${t("ccm", { p: it.ref })}</div>`;
     const tabs = [["img", t("tab_manual")], ["th", t("tab_th")]];
     if (isTH()) tabs.reverse();
@@ -86,6 +89,33 @@
     const th = TH[it.id], b = it.fleet ? `<span class="badge ${it.fleet}">${fleetName(it.fleet)}</span>` : "";
     return isTH() && th ? `<span class="q-th">${b}${esc(th.q)}</span><span class="q-en">${esc(it.q)}</span>` : `<span class="q-th">${b}${esc(it.q)}</span>`;
   };
+
+  const ANS = window.ANS || {};
+  const clean = l => String(l).replace(/^# /, "");
+  function readParts(it, withAnswer) {
+    const th = TH[it.id];
+    if (isTH() && th) return [th.q, ...(withAnswer ? th.a.map(clean) : [])];
+    return [it.q, ...(withAnswer ? (ANS[it.id] || []).map(clean).concat(it.note ? [it.note] : []) : [])];
+  }
+  function refText(it, sample) {
+    const thai = /[\u0E00-\u0E7F]/.test(sample || "");
+    const th = TH[it.id] || {}, en = EN[it.id] || {};
+    return thai ? [...(th.a || []).map(clean), th.ez].join(" ") : [...(ANS[it.id] || []), it.note, en.ez].join(" ");
+  }
+  const sayBtn = (id, full) => window.TTS && TTS.ok ? `<button class="say" data-say="${id}" data-full="${full ? 1 : 0}" aria-label="Read aloud">🔊</button>` : "";
+  function myAnsBox() {
+    return `<div class="myans">
+      <textarea id="myAns" rows="2" placeholder="${t("my_ph")}">${esc(S.myAns)}</textarea>
+      ${window.TTS && TTS.srOk ? `<button class="mic" id="mic" aria-label="Speak">🎤</button>` : ""}
+    </div>`;
+  }
+  function compareHTML(it) {
+    if (!S.myAns.trim() || !window.TTS) return "";
+    const m = TTS.match(S.myAns, refText(it, S.myAns));
+    const lvl = m.pct >= 60 ? "good" : m.pct >= 30 ? "mid" : "low";
+    return `<div class="cmp ${lvl}"><div class="cmp-h"><b>${t("my_yours")}</b><span>${t("my_score", { h: m.hit.length, n: m.need, p: m.pct })}</span></div>
+      <p>${TTS.highlight(S.myAns, m.hit)}</p><small>${t(m.pct >= 60 ? "my_good" : m.pct >= 30 ? "my_mid" : "my_low")}</small></div>`;
+  }
 
   // ---------- read mode ----------
   function renderRead() {
@@ -106,6 +136,7 @@
         ${open ? `<div class="ans">${answerHTML(it)}
           <div class="actions">
             <button class="btn ${S.known.has(it.id) ? "" : "ok"}" data-known="${it.id}">${S.known.has(it.id) ? t("ungot") : t("got")}</button>
+            ${sayBtn(it.id, true)}
             <span class="meta">${t("page", { p: it.page })}</span>
           </div></div>` : ""}
       </article>`;
@@ -134,9 +165,10 @@
     if (S.idx < 0) S.idx = items.length - 1;
     const it = items[S.idx], s = secOf(it.sec);
     $("#card").innerHTML = `<div class="flash" data-sec="${it.sec}">
-      <div class="tag">${SEC_ICON[it.sec]} ${isTH() ? s.th : s.name} · ${t("q", { n: it.no })}${S.known.has(it.id) ? t("known_tag") : ""}</div>
+      <div class="tag"><span>${SEC_ICON[it.sec]} ${isTH() ? s.th : s.name} · ${t("q", { n: it.no })}${S.known.has(it.id) ? t("known_tag") : ""}</span>${sayBtn(it.id, S.revealed)}</div>
       <h3>${headHTML(it)}</h3>
-      ${S.revealed ? `<div class="ans">${answerHTML(it)}</div>
+      ${S.revealed ? "" : myAnsBox()}
+      ${S.revealed ? `${compareHTML(it)}<div class="ans">${answerHTML(it)}</div>
         <div class="cardnav">
           <button class="btn" data-grade="0">${t("notyet")}</button>
           <button class="btn ok" data-grade="1">${t("gotit")}</button>
@@ -155,14 +187,17 @@
     $("#pages").dataset.lang = LANG();
     let h = "";
     for (let p = 1; p <= D.pages; p++)
-      h += `<div class="ptitle">${t("page_n", { p })}</div><img loading="lazy" src="pages/page-${p}.jpg" data-page="${p}" alt="SafeTalk page ${p}">`;
+      h += `<div class="ptitle">${t("page_n", { p })}</div><img loading="lazy" src="${PAGES}page-${p}.jpg" data-page="${p}" alt="SafeTalk page ${p}">`;
     $("#pages").innerHTML = h;
   }
 
   function render() {
     document.querySelectorAll(".modes button").forEach(b => b.classList.toggle("on", b.dataset.mode === S.mode));
-    $("#filters").hidden = S.mode === "pages" || S.mode === "game";
+    $("#filters").hidden = !["read", "cards"].includes(S.mode);
     $("#game").hidden = S.mode !== "game";
+    $("#exam").hidden = S.mode !== "exam";
+    $("#me").hidden = S.mode !== "me";
+    if (window.TTS) TTS.stop();
     $("#read").hidden = S.mode !== "read";
     $("#cards").hidden = S.mode !== "cards";
     $("#pages").hidden = S.mode !== "pages";
@@ -170,6 +205,8 @@
     if (S.mode === "read") renderRead();
     else if (S.mode === "cards") renderCards();
     else if (S.mode === "game") window.STGame.show(S.fleet);
+    else if (S.mode === "exam") window.STExam.show(S.fleet);
+    else if (S.mode === "me") window.STMe.show();
     else renderPages();
     if (S.mode !== "game") window.STGame.hide();
   }
@@ -218,6 +255,13 @@
     if (!t) return;
     const d = t.dataset;
     if (d.mode) { S.mode = d.mode; save(); render(); scrollTo(0, 0); return; }
+    if (d.say) {
+      const it = D.items.find(x => x.id === d.say);
+      TTS.speak(readParts(it, d.full === "1"), LANG(), t); return;
+    }
+    if (t.id === "mic") {
+      TTS.listen(LANG(), txt => { S.myAns = txt; const a = $("#myAns"); if (a) a.value = txt; }, on => t.classList.toggle("on", on)); return;
+    }
     if (d.sec) { S.sec = d.sec; S.idx = 0; S.revealed = false; save(); render(); return; }
     if (d.fleet) { S.fleet = d.fleet; S.idx = 0; S.revealed = false; save(); render(); return; }
     if (d.lang) { setLang(d.lang); return; }
@@ -231,31 +275,42 @@
     if (d.toggle) { S.open.has(d.toggle) ? S.open.delete(d.toggle) : S.open.add(d.toggle); renderRead(); return; }
     if (d.known) {
       S.known.has(d.known) ? S.known.delete(d.known) : S.known.add(d.known);
-      if (S.known.has(d.known)) S.open.delete(d.known);
+      if (S.known.has(d.known)) { S.open.delete(d.known); window.STATS && STATS.rec(d.known, true); }
       save(); ring(); renderRead(); return;
     }
-    if (t.id === "reveal") { S.revealed = true; renderCards(); return; }
+    if (t.id === "reveal") { const a = $("#myAns"); if (a) S.myAns = a.value; S.revealed = true; renderCards(); return; }
     if (d.grade) {
       const it = deck()[S.idx];
       if (d.grade === "1") S.known.add(it.id); else S.known.delete(it.id);
+      window.STATS && STATS.rec(it.id, d.grade === "1");
       save(); ring();
-      S.revealed = false;
+      S.revealed = false; S.myAns = "";
       if (!(S.onlyTodo && d.grade === "1")) S.idx++;
       renderCards(); return;
     }
-    if (d.step) { S.idx += +d.step; S.revealed = false; renderCards(); return; }
+    if (d.step) { S.idx += +d.step; S.revealed = false; S.myAns = ""; renderCards(); return; }
     if (t.id === "shuffle") {
       S.order = D.items.map(it => it.id).sort(() => Math.random() - 0.5);
       S.idx = 0; S.revealed = false; renderCards(); return;
     }
     if (t.tagName === "IMG" && d.id) {
       const it = D.items.find(x => x.id === d.id);
-      openViewer(it.img.map(s => "img/" + s), +d.i); return;
+      openViewer(it.img.map(s => IMG + s), +d.i); return;
     }
     if (t.tagName === "IMG" && d.page) {
-      openViewer(Array.from({ length: D.pages }, (_, i) => `pages/page-${i + 1}.jpg`), +d.page - 1); return;
+      openViewer(Array.from({ length: D.pages }, (_, i) => `${PAGES}page-${i + 1}.jpg`), +d.page - 1); return;
     }
   });
+  document.addEventListener("input", e => { if (e.target.id === "myAns") S.myAns = e.target.value; });
+  $("#ring").onclick = () => { S.mode = "me"; save(); render(); scrollTo(0, 0); };
+  $("#qPick").onclick = () => window.STMe && STMe.quarterSheet();
+  $("#qShort").textContent = D.short || "";
+
+  // shared helpers for exam.js / me.js
+  window.ST = { render: () => render(), D, S, TH, EN, ANS, esc, secOf, SEC_ICON, headHTML, answerHTML, readParts, refText, isTH, ring, save, IMG,
+    openItem(id) { S.mode = "read"; S.sec = "all"; S.q = ""; $("#q").value = ""; S.open.add(id); save(); render(); setTimeout(() => { const el = document.querySelector(`[data-id="${id}"]`); if (el) el.scrollIntoView({ block: "start" }); }, 50); },
+    markKnown(id, ok) { ok ? S.known.add(id) : S.known.delete(id); save(); ring(); } };
+
   $("#onlyTodo").onchange = e => { S.onlyTodo = e.target.checked; S.idx = 0; S.revealed = false; save(); renderCards(); };
   $("#q").addEventListener("input", e => { S.q = e.target.value; S.idx = 0; S.revealed = false; S.mode === "cards" ? renderCards() : renderRead(); });
 

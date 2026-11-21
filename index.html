@@ -18,11 +18,12 @@
 <header class="top">
   <div class="brand">
     <div>
-      <h1>SafeTalk <span class="q">Q3/2026</span><span class="plane">✈️</span></h1>
+      <h1>SafeTalk <button class="q" id="qPick"><span id="qShort">Q3/2026</span><small>▾</small></button><span class="plane">✈️</span></h1>
       <p class="sub" data-i18n="sub">Safety · First Aid · Security review</p>
       <div class="ctrls">
         <div class="lang" role="group" aria-label="Language"><button data-lang="en" class="on">EN</button><button data-lang="th">TH</button></div>
         <button id="verBtn" class="ver" aria-label="Version and update">v<span id="verTxt"></span> ⟳</button>
+        <button id="streakChip" class="ver streak cold" data-mode="me">🔥 0</button>
       </div>
     </div>
     <div class="ring" id="ring" title="Progress">
@@ -32,9 +33,10 @@
   </div>
   <nav class="modes" role="tablist">
     <button data-mode="read" class="on" data-i18n="m_read">Read</button>
-    <button data-mode="cards" data-i18n="m_cards">Flashcards</button>
+    <button data-mode="cards" data-i18n="m_cards">Cards</button>
+    <button data-mode="exam" data-i18n="m_exam">Exam</button>
     <button data-mode="game" data-i18n="m_game">Games</button>
-    <button data-mode="pages" data-i18n="m_pages">Original</button>
+    <button data-mode="me" data-i18n="m_me">Me</button>
   </nav>
 </header>
 
@@ -48,6 +50,7 @@
       <button data-fleet="A">🩷 Airbus</button>
       <button data-fleet="B">💙 Boeing</button>
     </div>
+    <button class="pagelink" data-mode="pages" data-i18n="m_pages">📄 Original pages</button>
   </section>
 
   <section id="read"></section>
@@ -61,6 +64,10 @@
   </section>
 
   <section id="game" hidden></section>
+
+  <section id="exam" hidden></section>
+
+  <section id="me" hidden></section>
 
   <section id="pages" hidden></section>
 </main>
@@ -95,8 +102,14 @@
 <script src="data.js"></script>
 <script src="th.js"></script>
 <script src="en.js"></script>
+<script src="ans.js"></script>
+<script src="quarters.js"></script>
+<script src="stats.js"></script>
+<script src="tts.js"></script>
 <script src="gamedata.js"></script>
 <script src="game.js"></script>
+<script src="exam.js"></script>
+<script src="me.js"></script>
 <script src="app.js"></script>
 <script src="update.js"></script>
 </body>
