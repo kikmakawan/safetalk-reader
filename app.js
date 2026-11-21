@@ -92,9 +92,9 @@
 
   const ANS = window.ANS || {};
   const clean = l => String(l).replace(/^# /, "");
-  function readParts(it, withAnswer) {
+  function readParts(it, withAnswer, lang = LANG()) {
     const th = TH[it.id];
-    if (isTH() && th) return [th.q, ...(withAnswer ? th.a.map(clean) : [])];
+    if (lang === "th" && th) return [th.q, ...(withAnswer ? th.a.map(clean) : [])];
     return [it.q, ...(withAnswer ? (ANS[it.id] || []).map(clean).concat(it.note ? [it.note] : []) : [])];
   }
   function refText(it, sample) {
@@ -102,7 +102,8 @@
     const th = TH[it.id] || {}, en = EN[it.id] || {};
     return thai ? [...(th.a || []).map(clean), th.ez].join(" ") : [...(ANS[it.id] || []), it.note, en.ez].join(" ");
   }
-  const sayBtn = (id, full) => window.TTS && TTS.ok ? `<button class="say" data-say="${id}" data-full="${full ? 1 : 0}" aria-label="Read aloud">🔊</button>` : "";
+  const sayBtn = (id, full) => window.TTS && TTS.ok ? `<span class="says">${["en", "th"].map(l =>
+    `<button class="say" data-say="${id}" data-full="${full ? 1 : 0}" data-sl="${l}" aria-label="Read aloud ${l === "th" ? "Thai" : "English"}">🔊 ${l.toUpperCase()}</button>`).join("")}</span>` : "";
   function myAnsBox() {
     return `<div class="myans">
       <textarea id="myAns" rows="2" placeholder="${t("my_ph")}">${esc(S.myAns)}</textarea>
@@ -257,7 +258,7 @@
     if (d.mode) { S.mode = d.mode; save(); render(); scrollTo(0, 0); return; }
     if (d.say) {
       const it = D.items.find(x => x.id === d.say);
-      TTS.speak(readParts(it, d.full === "1"), LANG(), t); return;
+      TTS.speak(readParts(it, d.full === "1", d.sl), d.sl, t); return;
     }
     if (t.id === "mic") {
       TTS.listen(LANG(), txt => { S.myAns = txt; const a = $("#myAns"); if (a) a.value = txt; }, on => t.classList.toggle("on", on)); return;

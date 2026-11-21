@@ -66,7 +66,7 @@
       <div class="ex-prog"><i style="width:${(E.i + 1) / E.list.length * 100}%"></i></div>
       <div class="ex-meta"><span>${t("ex_q", { i: E.i + 1, n: E.list.length })}</span><span>${t("ex_done", { n: done })}</span></div>
       <div class="flash" data-sec="${it.sec}">
-        <div class="tag"><span>${ST.SEC_ICON[it.sec]} ${ST.isTH() ? ST.secOf(it.sec).th : ST.secOf(it.sec).name}</span>${TTS.ok ? `<button class="say" data-ex-say="1">🔊</button>` : ""}</div>
+        <div class="tag"><span>${ST.SEC_ICON[it.sec]} ${ST.isTH() ? ST.secOf(it.sec).th : ST.secOf(it.sec).name}</span>${TTS.ok ? `<span class="says"><button class="say" data-ex-say="en">🔊 EN</button><button class="say" data-ex-say="th">🔊 TH</button></span>` : ""}</div>
         <h3>${ST.headHTML(it)}</h3>
         ${E.type === "written" ? `<div class="myans"><textarea id="exAns" rows="5" placeholder="${t("my_ph")}">${ST.esc(a.text)}</textarea>
             ${TTS.srOk ? `<button class="mic" id="exMic">🎤</button>` : ""}</div>`
@@ -144,7 +144,7 @@
     if (d.exPick) { E.ans[E.i].pick = +d.exPick; run(); return; }
     if (d.exGo) { keep(); E.i = +d.exGo; run(); return; }
     if (b.id === "exMic") { TTS.listen(LANG(), txt => { E.ans[E.i].text = txt; const a = $("#exAns"); if (a) a.value = txt; }, on => b.classList.toggle("on", on)); return; }
-    if (d.exSay) { TTS.speak(ST.readParts(E.list[E.i], false), LANG(), b); return; }
+    if (d.exSay) { TTS.speak(ST.readParts(E.list[E.i], false, d.exSay), d.exSay, b); return; }
     if (d.exGrade) {
       const ok = d.exGrade === "1"; E.ans[E.i].grade = ok; STATS.rec(E.list[E.i].id, ok);
       if (E.i < E.list.length - 1) { E.i++; review(); } else result();

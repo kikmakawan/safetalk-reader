@@ -1,9 +1,10 @@
 // Bump all three together when releasing: version.js, version.json, CACHE in sw.js
 window.APP_VERSION = {
-  v: "2.0.1",
+  v: "2.0.2",
   date: "21 Nov 2026",
   notes: {
     en: [
+      "🔊 Two listen buttons: EN and TH — hear any question in either language",
       "📝 Mock exam: multiple choice (auto-graded) or written/spoken (self-check)",
       "🔊 Read aloud and 🎤 answer by voice or typing, with key-word matching",
       "👤 Me tab: stats, 7-day chart, weak questions, exam history",
@@ -11,6 +12,7 @@ window.APP_VERSION = {
       "⚙️ Text size, light/dark theme, backup & move progress, quarter picker",
     ],
     th: [
+      "🔊 ปุ่มฟังแยก 2 ปุ่ม EN / TH ฟังได้ทั้งสองภาษาทุกข้อ",
       "📝 สอบเสมือนจริง: เลือกตอบ (ตรวจอัตโนมัติ) หรือ เขียน/พูดตอบ (ตรวจเอง)",
       "🔊 ฟังเสียงอ่าน และ 🎤 พูดหรือพิมพ์ตอบ พร้อมเทียบคำสำคัญ",
       "👤 แท็บ ฉัน: สถิติ กราฟ 7 วัน ข้อที่ควรฝึก ประวัติสอบ",
