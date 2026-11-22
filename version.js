@@ -1,9 +1,11 @@
 // Bump all three together when releasing: version.js, version.json, CACHE in sw.js
 window.APP_VERSION = {
-  v: "2.0.2",
+  v: "2.0.3",
   date: "21 Nov 2026",
   notes: {
     en: [
+      "✈️ Fixed offline use: the app now always opens from your device, even on in-flight Wi-Fi",
+      "⟳ Refresh no longer deletes offline files; shows “Offline ready ✓”",
       "🔊 Two listen buttons: EN and TH — hear any question in either language",
       "📝 Mock exam: multiple choice (auto-graded) or written/spoken (self-check)",
       "🔊 Read aloud and 🎤 answer by voice or typing, with key-word matching",
@@ -12,6 +14,8 @@ window.APP_VERSION = {
       "⚙️ Text size, light/dark theme, backup & move progress, quarter picker",
     ],
     th: [
+      "✈️ แก้ใช้งานออฟไลน์: เปิดจากเครื่องเสมอ แม้ต่อ Wi-Fi บนเครื่องบิน",
+      "⟳ ปุ่มรีเฟรชไม่ลบไฟล์ออฟไลน์อีกแล้ว และบอกสถานะ “พร้อมใช้ออฟไลน์ ✓”",
       "🔊 ปุ่มฟังแยก 2 ปุ่ม EN / TH ฟังได้ทั้งสองภาษาทุกข้อ",
       "📝 สอบเสมือนจริง: เลือกตอบ (ตรวจอัตโนมัติ) หรือ เขียน/พูดตอบ (ตรวจเอง)",
       "🔊 ฟังเสียงอ่าน และ 🎤 พูดหรือพิมพ์ตอบ พร้อมเทียบคำสำคัญ",

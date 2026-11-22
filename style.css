@@ -419,3 +419,4 @@ html[data-theme=dark] .me-badge.got{background:linear-gradient(180deg,#4a3f1f,#4
 .q-row{display:flex;flex-direction:column;align-items:flex-start;width:100%;border:2px solid var(--line);background:var(--bg);border-radius:16px;padding:12px 14px;margin:8px 0;text-align:left}
 .q-row.on{border-color:var(--pink-d)}
 .q-row small{color:var(--muted)}
+#shOff.ok{color:var(--ok)} #shOff.warn{color:#d98a00}

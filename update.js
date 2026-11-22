@@ -1,4 +1,6 @@
-// Version label, update check and hard refresh
+// Version label, update check, safe refresh and offline status.
+// Refresh never deletes the offline copy: the new version is downloaded and verified
+// first by the service worker; only then does the page reload.
 (() => {
   const V = window.APP_VERSION;
   const $ = s => document.querySelector(s);
@@ -7,29 +9,87 @@
   const notes = () => ($("#shNotes").innerHTML = (V.notes[LANG()] || V.notes.en || V.notes).map(n => `<li>${n}</li>`).join(""));
   notes(); document.addEventListener("langchange", notes);
 
+  const sw = "serviceWorker" in navigator && location.protocol !== "file:";
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
   const newer = (a, b) => { // is a > b ?
     const x = a.split(".").map(Number), y = b.split(".").map(Number);
     for (let i = 0; i < 3; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0); }
     return false;
   };
   async function latest() {
+    if (navigator.onLine === false) return null;
     try {
-      const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
-      return r.ok ? await r.json() : null;
+      const ctl = new AbortController(); const tm = setTimeout(() => ctl.abort(), 5000);
+      const r = await fetch("version.json?t=" + Date.now(), { cache: "no-store", signal: ctl.signal });
+      clearTimeout(tm);
+      if (!r.ok) return null;
+      const j = await r.json();          // a captive-portal page fails here
+      return j && j.v ? j : null;
     } catch { return null; }
   }
-  function toast(msg) {
+  function toast(msg, ms = 2800) {
     const el = $("#toast"); el.textContent = msg; el.hidden = false;
-    clearTimeout(toast.h); toast.h = setTimeout(() => (el.hidden = true), 2600);
+    clearTimeout(toast.h); toast.h = setTimeout(() => (el.hidden = true), ms);
   }
-  async function hardRefresh() {
-    $("#shGo").disabled = true; $("#shGo").textContent = t("sh_loading");
+
+  // ---------- offline status (asks the service worker how many files are stored) ----------
+  async function offlineStatus() {
+    if (!sw || !navigator.serviceWorker.controller) return null;
+    return new Promise(res => {
+      const ch = new MessageChannel(); const tm = setTimeout(() => res(null), 2000);
+      ch.port1.onmessage = e => { clearTimeout(tm); res(e.data); };
+      navigator.serviceWorker.controller.postMessage({ type: "status" }, [ch.port2]);
+    });
+  }
+  async function showOffline() {
+    const el = $("#shOff"); if (!el) return;
+    const s = await offlineStatus();
+    if (!s) { el.textContent = t("off_none"); el.className = "warn"; return; }
+    const ready = s.have >= s.total;
+    el.textContent = ready ? t("off_ready", { n: s.total }) : t("off_partial", { h: s.have, n: s.total });
+    el.className = ready ? "ok" : "warn";
+    return ready;
+  }
+  // tell the user once per version when the offline copy is complete
+  async function announceReady() {
+    for (let i = 0; i < 20; i++) {
+      const s = await offlineStatus();
+      if (s && s.have >= s.total) {
+        try { if (localStorage.getItem("safetalk-offline-ok") !== s.version) { localStorage.setItem("safetalk-offline-ok", s.version); toast(t("off_toast")); } } catch {}
+        return;
+      }
+      await sleep(3000);
+    }
+  }
+
+  // ---------- safe refresh ----------
+  let busy = false;
+  async function safeRefresh() {
+    if (busy) return; busy = true;
+    const btn = $("#shGo"), label = btn.textContent;
+    const done = msg => { busy = false; btn.disabled = false; btn.textContent = label; if (msg) toast(msg, 3500); };
+    btn.disabled = true; btn.textContent = t("sh_loading");
+    const L = await latest();
+    if (!L) return done(t("off_cant")); // offline / in-flight Wi-Fi: keep everything as it is
+    if (!sw) { location.reload(); return; }
     try {
-      if ("serviceWorker" in navigator) for (const r of await navigator.serviceWorker.getRegistrations()) await r.unregister();
-      if (window.caches) for (const k of await caches.keys()) await caches.delete(k);
-    } catch {}
-    location.replace(location.pathname + "?v=" + Date.now());
+      const reg = await navigator.serviceWorker.getRegistration();
+      if (!reg) { location.reload(); return; }
+      await reg.update().catch(() => {});
+      const nw = reg.installing || reg.waiting;
+      if (nw) {
+        const ok = await new Promise(res => {
+          const tm = setTimeout(() => res(false), 120000);
+          const chk = () => { if (nw.state === "activated") { clearTimeout(tm); res(true); } else if (nw.state === "redundant") { clearTimeout(tm); res(false); } };
+          nw.addEventListener("statechange", chk); chk();
+        });
+        if (!ok) return done(t("upd_fail"));
+      }
+      try { sessionStorage.setItem("safetalk-just-updated", "1"); } catch {}
+      location.reload();
+    } catch { done(t("upd_fail")); }
   }
+
   async function check(silent) {
     const L = await latest();
     if (!L) { if (!silent) $("#shNew").textContent = t("sh_off"); return; }
@@ -40,18 +100,18 @@
     if (!silent && !up) $("#shNew").textContent += t("sh_latest");
   }
 
-  $("#verBtn").onclick = () => { $("#sheet").hidden = false; $("#shNew").textContent = t("sh_checking"); check(false); };
+  $("#verBtn").onclick = () => { $("#sheet").hidden = false; $("#shNew").textContent = t("sh_checking"); check(false); showOffline(); };
   $("#shClose").onclick = () => ($("#sheet").hidden = true);
   $("#sheet").onclick = e => { if (e.target.id === "sheet") $("#sheet").hidden = true; };
-  $("#shGo").onclick = hardRefresh;
-  $("#updGo").onclick = hardRefresh;
+  $("#shGo").onclick = safeRefresh;
+  $("#updGo").onclick = () => { $("#sheet").hidden = false; check(false); showOffline(); safeRefresh(); };
   $("#updX").onclick = () => ($("#updBar").hidden = true);
 
-  // clean the ?v= from the address bar after a refresh, and say which version loaded
-  if (/[?&]v=\d+/.test(location.search)) {
-    history.replaceState(null, "", location.pathname);
-    setTimeout(() => toast(t("toast_loaded", { v: V.v })), 400);
-  }
+  // tidy the address bar after old-style refreshes, and confirm the loaded version
+  if (/[?&]v=\d+/.test(location.search)) history.replaceState(null, "", location.pathname);
+  try { if (sessionStorage.getItem("safetalk-just-updated")) { sessionStorage.removeItem("safetalk-just-updated"); setTimeout(() => toast(t("toast_loaded", { v: V.v })), 400); } } catch {}
+
   check(true);
   document.addEventListener("visibilitychange", () => { if (!document.hidden) check(true); });
+  if (sw) navigator.serviceWorker.ready.then(() => setTimeout(announceReady, 1500)).catch(() => {});
 })();
