@@ -420,3 +420,5 @@ html[data-theme=dark] .me-badge.got{background:linear-gradient(180deg,#4a3f1f,#4
 .q-row.on{border-color:var(--pink-d)}
 .q-row small{color:var(--muted)}
 #shOff.ok{color:var(--ok)} #shOff.warn{color:#d98a00}
+
+.sheet-fill{width:100%;margin:8px 0 2px}

@@ -1,9 +1,10 @@
 // Bump all three together when releasing: version.js, version.json, CACHE in sw.js
 window.APP_VERSION = {
-  v: "2.0.3",
+  v: "2.0.4",
   date: "21 Nov 2026",
   notes: {
     en: [
+      "🖼️ Answer images now always saved for offline — missing files download again automatically",
       "✈️ Fixed offline use: the app now always opens from your device, even on in-flight Wi-Fi",
       "⟳ Refresh no longer deletes offline files; shows “Offline ready ✓”",
       "🔊 Two listen buttons: EN and TH — hear any question in either language",
@@ -14,6 +15,7 @@ window.APP_VERSION = {
       "⚙️ Text size, light/dark theme, backup & move progress, quarter picker",
     ],
     th: [
+      "🖼️ รูปคำตอบเก็บไว้ใช้ออฟไลน์ครบทุกรูป ไฟล์ไหนโหลดไม่ทันจะโหลดซ้ำให้อัตโนมัติ",
       "✈️ แก้ใช้งานออฟไลน์: เปิดจากเครื่องเสมอ แม้ต่อ Wi-Fi บนเครื่องบิน",
       "⟳ ปุ่มรีเฟรชไม่ลบไฟล์ออฟไลน์อีกแล้ว และบอกสถานะ “พร้อมใช้ออฟไลน์ ✓”",
       "🔊 ปุ่มฟังแยก 2 ปุ่ม EN / TH ฟังได้ทั้งสองภาษาทุกข้อ",

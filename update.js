@@ -41,25 +41,41 @@
       navigator.serviceWorker.controller.postMessage({ type: "status" }, [ch.port2]);
     });
   }
-  async function showOffline() {
-    const el = $("#shOff"); if (!el) return;
-    const s = await offlineStatus();
-    if (!s) { el.textContent = t("off_none"); el.className = "warn"; return; }
+  function paint(s) {
+    const el = $("#shOff"), btn = $("#shFill"); if (!el) return;
+    if (!s) { el.textContent = t("off_none"); el.className = "warn"; btn.hidden = true; return; }
     const ready = s.have >= s.total;
     el.textContent = ready ? t("off_ready", { n: s.total }) : t("off_partial", { h: s.have, n: s.total });
     el.className = ready ? "ok" : "warn";
-    return ready;
+    btn.hidden = ready;
   }
-  // tell the user once per version when the offline copy is complete
-  async function announceReady() {
-    for (let i = 0; i < 20; i++) {
-      const s = await offlineStatus();
-      if (s && s.have >= s.total) {
-        try { if (localStorage.getItem("safetalk-offline-ok") !== s.version) { localStorage.setItem("safetalk-offline-ok", s.version); toast(t("off_toast")); } } catch {}
-        return;
-      }
-      await sleep(3000);
-    }
+  async function showOffline() { const s = await offlineStatus(); paint(s); return s; }
+  // download every missing file (answer images, pages…) for offline use
+  let filling = false;
+  async function fillOffline(manual) {
+    if (filling || !sw || !navigator.serviceWorker.controller) return;
+    if (navigator.onLine === false) { if (manual) toast(t("off_cant")); return; }
+    filling = true;
+    const btn = $("#shFill"); btn.disabled = true; btn.textContent = t("off_dl_ing");
+    await new Promise(res => {
+      const ch = new MessageChannel(); let tm;
+      const arm = () => { clearTimeout(tm); tm = setTimeout(res, 60000); };
+      ch.port1.onmessage = e => { arm(); const d = e.data || {}; if (d.have) paint(d); if (d.done) { clearTimeout(tm); res(); } };
+      arm(); navigator.serviceWorker.controller.postMessage({ type: "fill" }, [ch.port2]);
+    });
+    filling = false; btn.disabled = false; btn.textContent = t("off_dl");
+    const s = await showOffline();
+    if (s && s.have >= s.total) announce(s.version); else if (manual && s) toast(t("off_some", { n: s.total - s.have }), 4000);
+  }
+  function announce(v) {
+    try { if (localStorage.getItem("safetalk-offline-ok") !== v) { localStorage.setItem("safetalk-offline-ok", v); toast(t("off_toast")); } } catch {}
+  }
+  // on start: if anything is missing and we're online, top it up quietly
+  async function autoFill() {
+    for (let i = 0; i < 10 && !navigator.serviceWorker.controller; i++) await sleep(1000);
+    const s = await offlineStatus();
+    if (!s) return;
+    if (s.have >= s.total) announce(s.version); else fillOffline(false);
   }
 
   // ---------- safe refresh ----------
@@ -104,6 +120,7 @@
   $("#shClose").onclick = () => ($("#sheet").hidden = true);
   $("#sheet").onclick = e => { if (e.target.id === "sheet") $("#sheet").hidden = true; };
   $("#shGo").onclick = safeRefresh;
+  $("#shFill").onclick = () => fillOffline(true);
   $("#updGo").onclick = () => { $("#sheet").hidden = false; check(false); showOffline(); safeRefresh(); };
   $("#updX").onclick = () => ($("#updBar").hidden = true);
 
@@ -113,5 +130,6 @@
 
   check(true);
   document.addEventListener("visibilitychange", () => { if (!document.hidden) check(true); });
-  if (sw) navigator.serviceWorker.ready.then(() => setTimeout(announceReady, 1500)).catch(() => {});
+  if (sw) navigator.serviceWorker.ready.then(() => setTimeout(autoFill, 1500)).catch(() => {});
+  addEventListener("online", () => setTimeout(autoFill, 2000));
 })();
