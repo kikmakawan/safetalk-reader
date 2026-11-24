@@ -65,6 +65,10 @@ self.addEventListener('install', e => {
     // the app itself must be complete, otherwise keep the old version
     for (const u of await missing(c)) if (CORE.includes(u) && !(await grab(c, u, 3))) throw new Error('core file failed: ' + u);
     await fill(); // images/pages: best effort now, topped up later
+    // One-time migration: versions up to 2.0.4 expected new versions to switch in automatically
+    // (their Update button waits for that). If one of those is on the device, switch in now.
+    const legacy = (await caches.keys()).some(k => k !== CACHE && /^safetalk-(q3-2026|1\.|2\.0\.[0-4]$)/.test(k));
+    if (legacy) await self.skipWaiting();
     // No skipWaiting here: a new version waits (fully downloaded) until the user taps "Update".
     // The version on the device never changes by itself, so it keeps working offline indefinitely.
   })());

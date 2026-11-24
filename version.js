@@ -1,9 +1,10 @@
 // Bump all three together when releasing: version.js, version.json, CACHE in sw.js
 window.APP_VERSION = {
-  v: "2.0.5",
+  v: "2.0.6",
   date: "21 Nov 2026",
   notes: {
     en: [
+      "🔧 Fixed Update getting stuck on “Loading latest version…” when coming from 2.0.4",
       "📌 The app stays on your device and never changes version by itself — new versions wait until you tap Update",
       "💾 Asks the phone to keep the app’s storage permanently; exams in progress survive the app being closed",
       "🖼️ Answer images now always saved for offline — missing files download again automatically",
@@ -17,6 +18,7 @@ window.APP_VERSION = {
       "⚙️ Text size, light/dark theme, backup & move progress, quarter picker",
     ],
     th: [
+      "🔧 แก้ปุ่มอัปเดตค้างที่ “Loading latest version…” เมื่ออัปเดตจาก 2.0.4",
       "📌 แอปอยู่ในเครื่องถาวร ไม่เปลี่ยนเวอร์ชันเอง — เวอร์ชันใหม่จะรอจนกว่าคุณกดอัปเดต",
       "💾 ขอให้เครื่องเก็บข้อมูลแอปแบบถาวร และการสอบที่ทำค้างไว้ไม่หายแม้แอปถูกปิด",
       "🖼️ รูปคำตอบเก็บไว้ใช้ออฟไลน์ครบทุกรูป ไฟล์ไหนโหลดไม่ทันจะโหลดซ้ำให้อัตโนมัติ",
