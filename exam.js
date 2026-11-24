@@ -6,6 +6,24 @@
   let setup = { type: "mcq", n: 20, mins: 20, sec: "all" };
   try { Object.assign(setup, JSON.parse(localStorage.getItem(SKEY)) || {}); } catch {}
   let E = null, timer = null, fleet = "all";
+  const LKEY = "safetalk-exam-live";
+  // keep an exam in progress if the phone closes the app in the background
+  function persistE() {
+    try {
+      if (!E || !["run", "review"].includes(E.view)) { localStorage.removeItem(LKEY); return; }
+      localStorage.setItem(LKEY, JSON.stringify({ qid: QID, type: E.type, ids: E.list.map(i => i.id), i: E.i, ans: E.ans, t0: E.t0, end: E.end, view: E.view, at: Date.now() }));
+    } catch {}
+  }
+  function restoreE() {
+    try {
+      const o = JSON.parse(localStorage.getItem(LKEY));
+      if (!o || o.qid !== QID || Date.now() - o.at > 3 * 864e5) return false;
+      const list = o.ids.map(id => ST.D.items.find(x => x.id === id)).filter(Boolean);
+      if (list.length !== o.ids.length) return false;
+      E = { type: o.type, list, i: o.i, ans: o.ans, t0: o.t0, end: o.end, view: o.view };
+      return true;
+    } catch { return false; }
+  }
   const el = () => $("#exam");
   const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
   const stop = () => { if (timer) { clearInterval(timer); timer = null; } };
@@ -16,7 +34,7 @@
     return `<div class="chips ex-chips">${opts.map(([v, l]) => `<button data-ex-set="${key}" data-v="${v}" class="${String(setup[key]) === String(v) ? "on" : ""}">${l}</button>`).join("")}</div>`;
   }
   function showSetup() {
-    stop(); E = null;
+    stop(); E = null; try { localStorage.removeItem(LKEY); } catch {}
     const last = (STATS.data.exams || []).filter(x => x.qid === QID)[0];
     el().innerHTML = `
       <div class="g-hero"><div class="g-big-ico">📝</div><h2>${t("ex_title")}</h2><p>${t("ex_sub")}</p></div>
@@ -78,7 +96,7 @@
         ${last ? `<button class="btn ok" data-ex="finish">${t("ex_finish")}</button>` : `<button class="btn ok" data-ex="next">${t("next")}</button>`}
       </div>
       <div class="ex-dots">${E.ans.map((x, k) => `<button class="${k === E.i ? "cur" : ""} ${(E.type === "mcq" ? x.pick >= 0 : x.text.trim()) ? "done" : ""}" data-ex-go="${k}">${k + 1}</button>`).join("")}</div>`;
-    tick(); scrollTo(0, 0);
+    tick(); scrollTo(0, 0); persistE();
   }
 
   function finish() {
@@ -109,11 +127,11 @@
           <button class="btn ok" data-ex-grade="1">✓ ${t("ex_right")}</button>
         </div>
       </div>`;
-    scrollTo(0, 0);
+    scrollTo(0, 0); persistE();
   }
 
   function result() {
-    E.view = "result";
+    E.view = "result"; persistE();
     const n = E.list.length, score = E.ans.filter(a => a.grade).length, pct = Math.round(score / n * 100);
     const secs = Math.round((Date.now() - E.t0) / 1000), pass = pct >= 80;
     STATS.exam({ d: Date.now(), qid: QID, n, score, pct, type: E.type, secs });
@@ -164,11 +182,16 @@
       case "new": showSetup(); break;
     }
   });
-  document.addEventListener("input", e => { if (e.target.id === "exAns" && E) E.ans[E.i].text = e.target.value; });
+  document.addEventListener("input", e => { if (e.target.id === "exAns" && E) { E.ans[E.i].text = e.target.value; persistE(); } });
 
   window.STExam = {
     show(f) {
       const changed = f !== fleet; fleet = f;
+      if (!E && restoreE()) {
+        if (E.view === "review") return review();
+        if (E.end && Date.now() >= E.end) return finish();
+        timer = setInterval(tick, 500); return run();
+      }
       if (!E || changed) showSetup();
       else if (E.view === "run") run(); else if (E.view === "review") review();
     },
